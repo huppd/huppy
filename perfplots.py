@@ -331,29 +331,39 @@ def plotWeakScaling( paths, nps, lab=[], runs=['']):
 	#savefig('speedup.pdf')
 	#show()
 
-def addTime( paths, nps, lab=[], runs=[''], pattern=ex.PimpSolveTimePattern,scale=1):
+
+
+def addTime( paths, nps, label=[], runs=[''], pattern=ex.PimpSolveTimePattern,scale=1, basex=10, basey=10, marker='.', linestyle='-' ):
 	time = []
+	fails = []
 	for path in paths:
-		temptime = 1e99
+		temptime = float( 'inf' )
+		fails.append( 0. )
 		for run in runs:
 			tempnew =  ex.extract( path+'output'+str(run), pattern,isarray=False )
-			print 'path: ', path+'output'+str(run)
-			print 'run: ', run,' tempnew: ',tempnew
-			tempnew = tempnew
+			# print 'path: ', path+'output'+str(run)
+			# print 'run: ', run,' tempnew: ',tempnew
 			if( isinstance( tempnew, ndarray ) ):
-				temptime = min( temptime, tempnew[0] )
+				if( len(tempnew)>0 ):
+					temptime = min( temptime, tempnew[0] )
+				else:
+					fails[-1] += 1.
 			else:
 				temptime = min( temptime, tempnew )
 		#temptime =  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False )
 		#print temptime
 		time.append(temptime)
+		fails[-1] /= len(runs)
 		#time.append(  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False ) )
 	#  
+	print ''
+	print label
 	print 'nps: ',nps
 	print 'time: ', time
-	if len(lab)==0:
-		loglog(nps,array(time)*scale,'.-',ms=5)
+	print 'fails: ', fails
+	if len(label)==0:
+		loglog(nps,array(time)*scale,ms=5,basex=basex,basey=basey, linestyle=':', color='gray', linewidth=0.5)
 	else:
-		loglog(nps,array(time)*scale,'.-',ms=5,label=lab,basex=2,basey=10)
+		loglog(nps,array(time)*scale,ms=5,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=1.2 )
 	return time
 
