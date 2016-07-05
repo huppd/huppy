@@ -3,6 +3,7 @@ from pylab import *
 from itertools import cycle
 #from style import li,mi
 import extractor as ex
+import copy
 
 c = ['b','g','r','c','m','y']
 ci = cycle(c)
@@ -226,39 +227,6 @@ def plotSpeedup( paths, nps, lab=[], runs=[''],):
 	#savefig('speedup.pdf')
 	#show()
 
-def plotEfficency( paths, nps, lab=[], runs=['']):
-	time = []
-	for path in paths:
-		temptime = 1e99
-		for run in runs:
-			tempnew =  ex.extract( path+'output'+str(run), ex.PimpSolveTimePattern,isarray=False )
-			print 'tempnew: ',tempnew
-			tempnew = tempnew
-			temptime = min(temptime, tempnew )
-		#temptime =  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False )
-		#print temptime
-		time.append(temptime)
-		#time.append(  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False ) )
-	#  
-	print 'nps: ',nps
-	print 'time: ', time
-	if len(lab)==0:
-		plot(nps,time[0]/array(time)/nps,'.-',ms=5)
-	else:
-		plot(nps,time[0]/array(time)/nps,'.-',ms=5,label=lab)
-	#plot(nps,array(nps)/array(nps[0]),':',lw=2)
-	#ylim(ymin=1)
-	gca().xaxis.set_ticks(nps)
-	xlabel('number of cores')
-	#gca().yaxis.set_label_position('top') 
-	#gca().yaxis.set_label_coords(0., 1.1)
-	ylabel('efficency',ha='left',va='bottom',rotation=0)
-	gca().yaxis.set_label_coords(-0.05, 1.075)
-	#if( len(leg)!=0 ):
-	grid(True)
-	#savefig('speedup.pdf')
-	#show()
-  
 def plotStrongScaling( paths, nps, lab=[], runs=['']):
 	time = []
 	for path in paths:
@@ -332,17 +300,14 @@ def plotWeakScaling( paths, nps, lab=[], runs=['']):
 	#show()
 
 
-
-def addTime( paths, nps, label=[], runs=[''], pattern=ex.PimpSolveTimePattern,scale=1, basex=10, basey=10, marker='.', linestyle='-' ):
+def getTimes( paths, runs, pattern ):
 	time = []
 	fails = []
 	for path in paths:
 		temptime = float( 'inf' )
 		fails.append( 0. )
 		for run in runs:
-			tempnew =  ex.extract( path+'output'+str(run), pattern,isarray=False )
-			# print 'path: ', path+'output'+str(run)
-			# print 'run: ', run,' tempnew: ',tempnew
+			tempnew =  ex.extract( path+'output'+str(run), pattern, isarray=False )
 			if( isinstance( tempnew, ndarray ) ):
 				if( len(tempnew)>0 ):
 					temptime = min( temptime, tempnew[0] )
@@ -350,20 +315,52 @@ def addTime( paths, nps, label=[], runs=[''], pattern=ex.PimpSolveTimePattern,sc
 					fails[-1] += 1.
 			else:
 				temptime = min( temptime, tempnew )
-		#temptime =  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False )
-		#print temptime
 		time.append(temptime)
 		fails[-1] /= len(runs)
-		#time.append(  ex.extract( path+'output', ex.PimpSolveTimePattern,isarray=False ) )
-	#  
+	return time, fails
+
+
+def plotEfficency(  paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern,scale=1, basex=10, basey=10, marker='', linestyle='-', color='', ms=3 ):
+	time, fails = getTimes( paths, runs, pattern )
 	print ''
 	print label
 	print 'nps: ',nps
 	print 'time: ', time
 	print 'fails: ', fails
+	efficency = copy.deepcopy( nps )
+	for i in range(len(time)):
+		efficency[i] = time[0]/time[i]/nps[i]
 	if len(label)==0:
-		loglog(nps,array(time)*scale,ms=5,basex=basex,basey=basey, linestyle=':', color='gray', linewidth=0.5)
+		plot(nps,efficency,'.-',ms=5)
 	else:
-		loglog(nps,array(time)*scale,ms=5,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=1.2 )
+		semilogx(nps,efficency,'.-', ms=ms, label=label, marker=marker, linestyle=linestyle, linewidth=0.8 )
+	# legend(loc=0)
+	xlabel( 'number of cores' )
+	ylabel( r'efficency',ha='left', va='bottom', rotation=0 )
+	gca().yaxis.set_label_coords(-0.1100, 1.075)
+	gca().xaxis.set_ticks( nps[::2] )
+	gca().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+	#gca().yaxis.set_label_position('top') 
+	#gca().yaxis.set_label_coords(0., 1.1)
+	return time
+  
+
+def addTime( paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10, marker='', linestyle='-', color='', ms=3 ):
+	time, fails = getTimes( paths, runs, pattern )
+	print ''
+	print label
+	print 'nps: ',nps
+	print 'time: ', time
+	print 'fails: ', fails
+	if len(color)==0:
+		loglog(nps,array(time)*scale,ms=2,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=1.2 )
+	else:
+		loglog(nps,array(time)*scale,ms=ms,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=0.8, color=color )
+	# legend(loc=0)
+	xlabel( 'number of cores' )
+	ylabel(r'time[s]', ha='left', va='bottom', rotation=0 )
+	gca().yaxis.set_label_coords(-0.1100, 1.075)
+	gca().xaxis.set_ticks( nps[::2] )
+	gca().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 	return time
 
