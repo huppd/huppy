@@ -12,6 +12,7 @@ l = [ '-','--' , '-.' , ':'  ]
 li = cycle(l)
 m = ['.','o','v','^','<','>','1','2','3','4','8','s','p','*','h','H','+','x','D','d','|','_','TICKLEFT','TICKRIGHT','TICKDOWN','CARETLEFT','CARETRIGHT','CARETUP','CARETDOWN']
 m = ['o','v','*','x','d','^','2','>','4','p','s','p','8','h','H','+','p','D','3','|','_','TICKLEFT','TICKRIGHT','TICKDOWN','CARETLEFT','CARETRIGHT','CARETUP','CARETDOWN','.']
+m = ['o','v','*','x','d','^','2','>','4','p','s','p','8','h','H','+','p','D','3','|','_','.']
 mi = cycle(m)
 
 def plotNOX( paths=['./'], leg=[],run='',newton=True ):
@@ -64,36 +65,33 @@ def plotNOX( paths=['./'], leg=[],run='',newton=True ):
 		gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
 		savefig('du.pdf',bbox_inches='tight')
 
-def plotBelos( paths=['./'], leg=[],run='' ):
+def plotBelos( files=['./Picard.txt'], leg=[],run='' ):
 	i=0
-	for path in paths:
-		linIter = ex.extract( path+'stats_linSolve.txt', ex.BelosMaxItPattern )
-		linatol = ex.extract( path+'stats_linSolve.txt', ex.BelosArTolPattern )
+	for f in files:
+		linIter = ex.extract( f, ex.BelosMaxItPattern )
+		linatol = ex.extract( f, ex.BelosArTolPattern )
 		figure(4)
-		#if( len(iterBelos)==len(linIter) ):
-			#plot(iterBelos[:],linIter[:],lw=2,label=lab,ls=ls )
-		#elif( len(iterBelos)-1==len(linIter) ):
-			#plot(iterBelos[1:],linIter[:],marker=m,lw=0.5,label=lab,ls=ls )
-		#else:
 		ls = li.next()
 		m = mi.next()
 		if isinstance(linIter,float) :
 			linIter=[linIter]
 		plot(range(1,len(linIter)+1),linIter,marker=m,lw=0.5,ls=ls )
-		xlabel('Newton iteration')
+		xlabel('Picard iteration')
 		ylabel(r'linear iterations')
 		grid(True)
-		#legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+		# legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+		legend(leg,loc=0)
 		gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
 		savefig('liniter.pdf',bbox_inches='tight')
 		#
 		figure(5)
 		#semilogy(iterBelos[1:],linatol[:],marker=m,lw=0.5,label=lab,ls=ls )
 		semilogy(range(1,len(linatol)+1),linatol[:],marker=m,lw=0.5,ls=ls )
-		xlabel('Newton iteration')
+		xlabel('Picard iteration')
 		ylabel(r'archieved tolerance of the linear solver')
 		grid(True)
-		#legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+		# legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+		legend(leg,loc=0)
 		gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
 		savefig('lintol.pdf',bbox_inches='tight')
 		i += 1
@@ -320,7 +318,7 @@ def getTimes( paths, runs, pattern ):
 	return time, fails
 
 
-def plotEfficency(  paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern,scale=1, basex=10, basey=10, marker='', linestyle='-', color='', ms=3 ):
+def plotEfficency(  paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern,scale=1, basex=10, basey=10, marker='', linestyle='-', color='b', ms=3 ):
 	time, fails = getTimes( paths, runs, pattern )
 	print ''
 	print label
@@ -331,21 +329,22 @@ def plotEfficency(  paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePat
 	for i in range(len(time)):
 		efficency[i] = time[0]/time[i]/nps[i]
 	if len(label)==0:
-		plot(nps,efficency,'.-',ms=5)
+		plot(nps,efficency,'.-',ms=ms, linestyle=linestyle, color=color)
 	else:
-		semilogx(nps,efficency,'.-', ms=ms, label=label, marker=marker, linestyle=linestyle, linewidth=0.8 )
+		semilogx(nps,efficency,'.-', ms=ms, label=label, marker=marker, linestyle=linestyle, linewidth=1., color=color )
 	# legend(loc=0)
 	xlabel( 'number of cores' )
-	ylabel( r'efficency',ha='left', va='bottom', rotation=0 )
-	gca().yaxis.set_label_coords(-0.1100, 1.075)
-	gca().xaxis.set_ticks( nps[::2] )
-	gca().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+	ylabel( r'efficiency',ha='left', va='bottom', rotation=0 )
+	# gca().yaxis.set_label_coords(-0.1100, 1.075)
+	# gca().xaxis.set_ticks( [1,2,4,8,32,128,512] )
+	# xlim((0,512))
+	# gca().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 	#gca().yaxis.set_label_position('top') 
 	#gca().yaxis.set_label_coords(0., 1.1)
 	return time
   
 
-def addTime( paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10, marker='', linestyle='-', color='', ms=3 ):
+def addTime( paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10, marker='', linestyle='-', color='', ms=3, lw=1. ):
 	time, fails = getTimes( paths, runs, pattern )
 	print ''
 	print label
@@ -353,14 +352,15 @@ def addTime( paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern, s
 	print 'time: ', time
 	print 'fails: ', fails
 	if len(color)==0:
-		loglog(nps,array(time)*scale,ms=2,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=1.2 )
+		loglog( nps,array(time)*scale, ms=ms, label=label, basex=basex, basey=basey, marker=marker, linestyle=linestyle, lw=lw )
 	else:
-		loglog(nps,array(time)*scale,ms=ms,label=label,basex=basex,basey=basey, marker=marker, linestyle=linestyle, linewidth=0.8, color=color )
+		loglog( nps,array(time)*scale, ms=ms, label=label, basex=basex, basey=basey, marker=marker, linestyle=linestyle, lw=lw, color=color )
 	# legend(loc=0)
 	xlabel( 'number of cores' )
 	ylabel(r'time[s]', ha='left', va='bottom', rotation=0 )
-	gca().yaxis.set_label_coords(-0.1100, 1.075)
-	gca().xaxis.set_ticks( nps[::2] )
+	# xlim((0,512))
+	# gca().yaxis.set_label_coords(-0.1100, 1.075)
+	# gca().xaxis.set_ticks( [1,2,4,8,32,128,512] )
 	gca().get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 	return time
 

@@ -7,10 +7,10 @@ import numpy
 inf = 1e9999
 
 # lin solver
-BelosIterPattern = re.compile(r"Iter[ ]+(\d+), \[ 1\] :    (\d+.\d+e[-,+]{0,1}\d+)")
+BelosIterPattern = re.compile(r"Iter[ ]+(\d+), \[ +\d+\] :    (\d+.\d+e[-,+]{0,1}\d+)")
 #BelosMaxItPattern = re.compile(r"[ ]+OK...........Number of Iterations = (\d+) [<,==] \d+")
 BelosMaxItPattern = re.compile(r"[\t, ]+[OK,Failed]+[.]+Number of Iterations = (\d+) [<,=]+ \d+")
-BelosArTolPattern = re.compile(r"[\t, ]+residual \[ 0 \] = (\d+.\d+e{0,1}[-,+]{0,1}\d+) [<,>] \d+.\d+e{0,1}[-,+]{0,1}\d+")
+BelosArTolPattern = re.compile(r"[\t, ]+residual \[ \d+ \] = (\d+.\d+e{0,1}[-,+]{0,1}\d+) [<,>] \d+.\d+e{0,1}[-,+]{0,1}\d+")
 
 # nonlin solver
 NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (\d+) -- ")
@@ -19,6 +19,8 @@ NOXResPattern = re.compile(r"\|\|F\|\| = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  ste
 PimpOmPattern = re.compile(r" \tomega=(\d+.{0,1}\d*)")
 PimpDofPattern = re.compile(r"\t--- Nf: \d+\tdof: (\d+)\t---")
 PimpNfPattern = re.compile(r"\t--- Nf: (\d)+\tdof: \d+\t---")
+
+PimpRefPattern = re.compile(r"\|\|u\[nf\]\|\|/\|\|u\[1\]\|\| = (\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*)")
 
 # timer
 PimpSolveTimePattern = re.compile(r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \(\d+\)")
