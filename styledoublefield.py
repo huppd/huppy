@@ -23,21 +23,17 @@ params = {'backend': 'pdf',
           'font.family':'sans-serif',
           'font.sans-serif':'Helvetica',
           #'font.sans-serif':'Computer Modern Sans serif',
-		  'text.fontsize': fs,
-		  'axes.linewidth' : 2.0,
-		  'lines.linewidth' : 4.0,
-		  'legend.fontsize': fs,
-		  'axes.titlesize': fs,
-		  'axes.labelsize': fs,
-		  'xtick.labelsize': fs*8/10,
-		  'ytick.labelsize': fs*8/10,
+          'text.fontsize': fs,
+          'axes.linewidth' : 2.0,
+          'lines.linewidth' : 4.0,
+          'legend.fontsize': fs,
+          'axes.titlesize': fs,
+          'axes.labelsize': fs,
+          'xtick.labelsize': fs*8/10,
+          'ytick.labelsize': fs*8/10,
           'text.usetex': True,
           'figure.figsize': fig_size,
           'figure.subplot.bottom' : 0.16,
           'figure.subplot.left' : 0.19
-}
+          }
 rcParams.update(params)
-
-c = ['b','g','r','c','m','y',]
-l = [ '--' , '-.' , ':' ,'-' ]
-

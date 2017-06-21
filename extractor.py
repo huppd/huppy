@@ -1,26 +1,31 @@
 """@package extractor
 uses regular expression to extract results from pimpact resuls and stores them
 in numpy array files
+TODO: include string variables for recurrin patterns
 """
 import re
 import numpy
 #from pylab import *
 inf = 1e9999
 
+# helper string
+float_str = r"\d+.\d+e{0,1}[-,+]{0,1}\d+"
+int_str = r"\d+"
+
 # lin solver
 BelosIterPattern = re.compile(
-    r"Iter[ ]+(\d+), \[ +\d+\] :    (\d+.\d+e[-,+]{0,1}\d+)")
-# BelosMaxItPattern = re.compile(
-    # r"[ ]+OK...........Number of Iterations = (\d+) [<,==] \d+")
+    r"Iter[ ]+("+int_str+"), \[ +"+int_str+"\] :    ("+float_str+")")
 BelosMaxItPattern = re.compile(
-    r"[\t, ]+[OK,Failed]+[.]+Number of Iterations = (\d+) [<,=]+ \d+")
+    r"\s+[OK,Failed]+[.]+Number of Iterations = ("+int_str+") [<,=]+ "+int_str)
 BelosArTolPattern = re.compile(
-    r"[\t, ]+residual \[ \d+ \] = (\d+.\d+e{0,1}[-,+]{0,1}\d+) [<,>] \d+.\d+e{0,1}[-,+]{0,1}\d+")
+    r"\s+residual \[ "+int_str+" \] = ("+float_str+") [<>] ")
 
 # nonlin solver
-NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (\d+) -- ")
+NOXIterPattern = re.compile(r"-- Nonlinear Solver Step ("+int_str+") -- ")
 NOXResPattern = re.compile(
-    r"\|\|F\|\| = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  step = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  dx = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
+    r"\|\|F\|\| = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  step = " +
+    "([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  dx = " +
+    "([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
 
 PimpOmPattern = re.compile(r" \tomega=(\d+.{0,1}\d*)")
 PimpDofPattern = re.compile(r"\t--- Nf: \d+\tdof: (\d+)\t---")
@@ -33,9 +38,14 @@ PimpRefPattern = re.compile(
 PimpSolveTimePattern = re.compile(
     r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \(\d+\)")
 PimpSolveTime = re.compile(
-    r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) " +
+    "\((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+" +
+    "(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*" +
+    "e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXCompFTime = re.compile(
-    r"NOX: compute F\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"NOX: compute F\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+." +
+    "{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}" +
+    "[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXSolveDXTime = re.compile(
     r"NOX: solve dx\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXUpdateXTime = re.compile(
@@ -47,34 +57,35 @@ FTime = re.compile(
 DivGradTime = re.compile(
     r"DivGrad: BlockGmresSolMgr total solve time\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 FZTime = re.compile(
-    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+\d+.{0,1}" +
+    "\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)""\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 
 
 def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
     m = pattern.groups
     try:
-            data = open(datafile).read()
+        data = open(datafile).read()
     except:
-            print('Error: couldnot open file:', datafile)
-            raise
-            #return ['*']
+        print('Error: couldnot open file:', datafile)
+        raise
+        #return ['*']
     dat = []
     for line in data.split("\n"):
             match = pattern.match(line)
             if match:
-                    dat.append(match.groups())
+                dat.append(match.groups())
     #print( dat )
     n = len(dat)
     #print( n )
     out = numpy.empty([n, m])
     for i in range(n):
-            for j in range(m):
-                    if isfloat:
-                            out[i][j] = float(dat[i][j])
-                    else:
-                            out[i][j] = int(dat[i][j])
+        for j in range(m):
+            if isfloat:
+                out[i][j] = float(dat[i][j])
+            else:
+                out[i][j] = int(dat[i][j])
     if len(outfile) != 0:
-            numpy.save(outfile, out)
+        numpy.save(outfile, out)
     #print 'n:',n,'m:',m
     #if( n==1 ):
             #out = out[0]
@@ -98,17 +109,17 @@ def extracttime(path):
     return time
 
 
-def extractmint(path, runs, start_r=0):
+def extractmint(path, runs):
     t = 1.e999
     fails = 0
-    for r in range(start_r, runs):
-            tnew = extracttime(path+'/run'+str(r))
-            t = min(t, tnew)
-            if tnew == inf:
-                    fails += 1
-                    print '\t', float(r)/(runs-1)*100., '% failed'
-            else:
-                    print '\t', float(r)/(runs-1)*100., '% done'
-    print fails, 'fails of', runs
+    for r in runs:
+        tnew = extracttime(path+'/run'+str(r))
+        t = min(t, tnew)
+        if tnew == inf:
+            fails += 1
+            print '\t', float(r)/(len(runs)-1)*100., '% failed'
+        else:
+            print '\t', float(r)/(len(runs)-1)*100., '% done'
+    print fails, 'fails of', len(runs)
     print
     return t

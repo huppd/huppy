@@ -17,7 +17,7 @@ golden_mean = 1./3.        # Aesthetic ratio
 golden_mean = 1./2.        # Aesthetic ratio
 fig_width = fig_width_pt*inches_per_pt  # width in inches
 fig_height = fig_width*golden_mean      # height in inches
-fig_size =  [fig_width,fig_height]
+fig_size = [fig_width,fig_height]
 params = {'backend': 'pdf',
           'axes.labelsize': fs,
           'font.family':'serif',
@@ -33,9 +33,5 @@ params = {'backend': 'pdf',
           'figure.figsize': fig_size,
           'figure.subplot.bottom' : 0.23,
           'figure.subplot.left' : 0.15
-}
+          }
 rcParams.update(params)
-
-c = ['b','g','r','c','m','y',]
-l = [ '--' , '-.' , ':' ,'-' ]
-

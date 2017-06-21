@@ -14,6 +14,7 @@ import pylab
 import matplotlib
 import matplotlib.patches as mpp
 
+
 def streamplot(x, y, u, v, density=1, linewidth=1,
                color='k', cmap=None, norm=None, vmax=None, vmin=None,
                arrowsize=1, INTEGRATOR='RK4'):
@@ -32,8 +33,8 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
     INTEGRATOR is experimental. Currently, RK4 should be used.
       '''
     ## Sanity checks.
-    assert len(x.shape)==1
-    assert len(y.shape)==1
+    assert len(x.shape) == 1
+    assert len(y.shape) == 1
     assert u.shape == (len(y), len(x))
     assert v.shape == (len(y), len(x))
     if type(linewidth) == numpy.ndarray:
@@ -69,8 +70,8 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
     else:
         assert len(density) > 0
         NBX = int(30*density[0])
-        NBY = int(30*density[1])            
-    blank = numpy.zeros((NBY,NBX))
+        NBY = int(30*density[1])
+    blank = numpy.zeros((NBY, NBX))
     ## Constants for conversion between grid-index space and
     ## blank-index space
     bx_spacing = NGX/float(NBX-1)
@@ -79,7 +80,7 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
         ## Takes grid space coords and returns nearest space in
         ## the blank array.
         return int((xi / bx_spacing) + 0.5), \
-               int((yi / by_spacing) + 0.5)
+            int((yi / by_spacing) + 0.5)
     def value_at(a, xi, yi):
         ## Linear interpolation - nice and quick because we are
         ## working in grid-index coordinates.
@@ -89,10 +90,10 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
         else:
             x = numpy.int(xi)
             y = numpy.int(yi)
-        a00 = a[y,x]
-        a01 = a[y,x+1]
-        a10 = a[y+1,x]
-        a11 = a[y+1,x+1]
+        a00 = a[y, x]
+        a01 = a[y, x+1]
+        a10 = a[y+1, x]
+        a11 = a[y+1, x+1]
         xt = xi - x
         yt = yi - y
         a0 = a00*(1-xt) + a01*xt
@@ -112,12 +113,13 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
             ui = value_at(u, xi, yi)
             vi = value_at(v, xi, yi)
             return -ui*dt_ds, -vi*dt_ds
-        check = lambda xi, yi: xi>=0 and xi<NGX-1 and yi>=0 and yi<NGY-1
+        check = lambda xi, yi: xi >= 0 and xi < NGX-1 and yi >= 0 and \
+            yi < NGY-1
         bx_changes = []
         by_changes = []
         ## Integrator function
         def rk4(x0, y0, f):
-            ds = 0.01 #min(1./NGX, 1./NGY, 0.01)
+            ds = 0.01  # min(1./NGX, 1./NGY, 0.01)
             stotal = 0
             xi = x0
             yi = y0
@@ -140,14 +142,15 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
                 xi += ds*(k1x+2*k2x+2*k3x+k4x) / 6.
                 yi += ds*(k1y+2*k2y+2*k3y+k4y) / 6.
                 # Final position might be out of the domain
-                if not check(xi, yi): break
+                if not check(xi, yi):
+                    break
                 stotal += ds
                 # Next, if s gets to thres, check blank.
                 new_xb, new_yb = blank_pos(xi, yi)
                 if new_xb != xb or new_yb != yb:
                     # New square, so check and colour. Quit if required.
-                    if blank[new_yb,new_xb] == 0:
-                        blank[new_yb,new_xb] = 1
+                    if blank[new_yb, new_xb] == 0:
+                        blank[new_yb, new_xb] = 1
                         bx_changes.append(new_xb)
                         by_changes.append(new_yb)
                         xb = new_xb
@@ -204,14 +207,15 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
                     xi += dx5
                     yi += dy5
                     # Final position might be out of the domain
-                    if not check(xi, yi): break
+                    if not check(xi, yi):
+                        break
                     stotal += ds
                     # Next, if s gets to thres, check blank.
                     new_xb, new_yb = blank_pos(xi, yi)
                     if new_xb != xb or new_yb != yb:
                         # New square, so check and colour. Quit if required.
-                        if blank[new_yb,new_xb] == 0:
-                            blank[new_yb,new_xb] = 1
+                        if blank[new_yb, new_xb] == 0:
+                            blank[new_yb, new_xb] = 1
                             bx_changes.append(new_xb)
                             by_changes.append(new_yb)
                             xb = new_xb
@@ -242,7 +246,8 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
         x_traj = xb_traj[::-1] + xf_traj[1:]
         y_traj = yb_traj[::-1] + yf_traj[1:]
         ## Tests to check length of traj. Remember, s in units of axes.
-        if len(x_traj) < 1: return None
+        if len(x_traj) < 1:
+            return None
         if stotal > .2:
             initxb, inityb = blank_pos(x0, y0)
             blank[inityb, initxb] = 1
@@ -253,17 +258,18 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
             return None
     ## A quick function for integrating trajectories if blank==0.
     trajectories = []
+    #
     def traj(xb, yb):
         if xb < 0 or xb >= NBX or yb < 0 or yb >= NBY:
             return
         if blank[yb, xb] == 0:
             t = rk4_integrate(xb*bx_spacing, yb*by_spacing)
-            if t != None:
+            if t is not None:
                 trajectories.append(t)
     ## Now we build up the trajectory set. I've found it best to look
     ## for blank==0 along the edges first, and work inwards.
-    for indent in range((max(NBX,NBY))/2):
-        for xi in range(max(NBX,NBY)-2*indent):
+    for indent in range((max(NBX, NBY))/2):
+        for xi in range(max(NBX, NBY)-2*indent):
             traj(xi+indent, indent)
             traj(xi+indent, NBY-1-indent)
             traj(indent, xi+indent)
@@ -273,11 +279,14 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
     #                 numpy.linspace(y.min(), y.max(), NBY+1), blank)
     # Load up the defaults - needed to get the color right.
     if type(color) == numpy.ndarray:
-        if vmin == None: vmin = color.min()
-        if vmax == None: vmax = color.max()
-        if norm == None: norm = matplotlib.colors.normalize
-        if cmap == None: cmap = matplotlib.cm.get_cmap(
-            matplotlib.rcParams['image.cmap'])
+        if vmin is None:
+            vmin = color.min()
+        if vmax is None:
+            vmax = color.max()
+        if norm is None:
+            norm = matplotlib.colors.normalize
+        if cmap is None:
+            cmap = matplotlib.cm.get_cmap(matplotlib.rcParams['image.cmap'])
     for t in trajectories:
         # Finally apply the rescale to adjust back to user-coords from
         # grid-index coordinates.
@@ -285,7 +294,7 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
         ty = numpy.array(t[1])*DY+YOFF
         tgx = numpy.array(t[0])
         tgy = numpy.array(t[1])
-        points = numpy.array([tx, ty]).T.reshape(-1,1,2)
+        points = numpy.array([tx, ty]).T.reshape(-1, 1, 2)
         segments = numpy.concatenate([points[:-1], points[1:]], axis=1)
         args = {}
         if type(linewidth) == numpy.ndarray:
@@ -294,34 +303,35 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
         else:
             args['linewidth'] = linewidth
             arrowlinewidth = linewidth
-        if type(color) == numpy.ndarray:            
-            args['color'] = cmap(norm(vmin=vmin,vmax=vmax)
+        if type(color) == numpy.ndarray:
+            args['color'] = cmap(norm(vmin=vmin, vmax=vmax)
                                  (value_at(color, tgx, tgy)[:-1]))
             arrowcolor = args['color'][len(tgx)/2]
         else:
             args['color'] = color
             arrowcolor = color
-        lc = matplotlib.collections.LineCollection\
-             (segments, **args)
+        lc = matplotlib.collections.LineCollection \
+            (segments, **args)
         pylab.gca().add_collection(lc)
         ## Add arrows half way along each trajectory.
         n = len(tx)/2
-        p = mpp.FancyArrowPatch((tx[n],ty[n]), (tx[n+1],ty[n+1]),
+        p = mpp.FancyArrowPatch((tx[n], ty[n]), (tx[n+1], ty[n+1]),
                                 arrowstyle='->', lw=arrowlinewidth,
                                 mutation_scale=20*arrowsize, color=arrowcolor)
         pylab.gca().add_patch(p)
-	#pylab.colorbar()
+        #pylab.colorbar()
     pylab.xlim(x.min(), x.max())
-    pylab.ylim(y.min(), y.max())    
+    pylab.ylim(y.min(), y.max())
     pylab.gca().set_aspect('equal')
     return
 
+
 def test():
     pylab.figure(1)
-    x = numpy.linspace(-3,3,100)
-    y = numpy.linspace(-3,3,100)
-    u = -1-x**2+y[:,numpy.newaxis]
-    v = 1+x-y[:,numpy.newaxis]**2
+    x = numpy.linspace(-3, 3, 100)
+    y = numpy.linspace(-3, 3, 100)
+    u = -1-x**2+y[:, numpy.newaxis]
+    v = 1+x-y[:, numpy.newaxis]**2
     speed = numpy.sqrt(u*u + v*v)
     pylab.subplot(121)
     streamplot(x, y, u, v, density=1, INTEGRATOR='RK4', color='b')
