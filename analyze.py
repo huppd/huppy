@@ -1,5 +1,5 @@
 """ prints mean of iter and tol and std """
-import pylab as py
+import numpy as np
 import extractor as ex
 
 
@@ -16,8 +16,8 @@ def analyze(step=''):
         count = len(stats[:, 0])
         print fil, ' (', count, ')'
         if count != 0:
-            print 'iter: ', py.mean(stats[:, 0]), '+- ', py.std(stats[:, 0])
-            print 'tol: ', py.mean(stats[:, 1]), '+- ', py.std(stats[:, 1])
+            print 'iter: ', np.mean(stats[:, 0]), '+- ', np.std(stats[:, 0])
+            print 'tol: ', np.mean(stats[:, 1]), '+- ', np.std(stats[:, 1])
         print
 
 

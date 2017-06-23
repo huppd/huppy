@@ -2,9 +2,9 @@
 from itertools import cycle
 
 
-LINES = ['--', '-.', ':', '-']
+LINES = ['--', '-.', ':', '-']*2
 LINEC = cycle(LINES)
-COLORS = ['b', 'g', 'r', 'c', 'm', 'y']
+COLORS = ['b', 'g', 'r', 'c', 'm', 'y']*2
 COLORC = cycle(COLORS)
 MARKERS = ['o', 'v', '*', 'x', 'd', '^', '2', '>', '4', 'p', 's', 'p', '8',
            'h', 'H', '+', 'p', 'D', '3', '|', '_', 'TICKLEFT', 'TICKRIGHT',

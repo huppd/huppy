@@ -46,6 +46,8 @@ def plot_energy_dir_all(path='./', direc='Y', fields=['0'], iterations=['0']):
                                     color=COLORS[i],
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
+    pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+               bbox_inches='tight')
 
 
 if __name__ == "__main__":
