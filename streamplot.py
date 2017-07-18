@@ -229,7 +229,8 @@ def streamplot(x, y, u, v, density=1, linewidth=1,
                     ## hacky curvature dependance:
                     v1 = numpy.array((xf_traj[-1]-xf_traj[-2], yf_traj[-1]-yf_traj[-2]))
                     v2 = numpy.array((xf_traj[-2]-xf_traj[-3], yf_traj[-2]-yf_traj[-3]))
-                    costheta = (v1/numpy.sqrt((v1**2).sum()) * v2/numpy.sqrt((v2**2).sum())).sum()
+                    costheta = (v1/numpy.sqrt((v1**2).sum()) *
+                                v2/numpy.sqrt((v2**2).sum())).sum()
                     if costheta < .8:
                         ds = .01
                         continue
@@ -336,7 +337,7 @@ def test():
     pylab.subplot(121)
     streamplot(x, y, u, v, density=1, INTEGRATOR='RK4', color='b')
     pylab.subplot(122)
-    streamplot(x, y, u, v, density=(1,1), INTEGRATOR='RK4', color=u,
+    streamplot(x, y, u, v, density=(1, 1), INTEGRATOR='RK4', color=u,
                linewidth=5*speed/speed.max())
     pylab.show()
 

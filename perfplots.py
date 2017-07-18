@@ -2,28 +2,111 @@
 import copy
 import pylab as pl
 import extractor as ex
-# from plotting_constants import COLORS, MARKERS, LINES
-# from plotting_constants import COLORC, MARKERC, LINEC
-from plotting_constants import MARKERC, LINEC
+from plotting_constants import COLORS, MARKERC, LINES, LINEC
 
 
-def plotNOX(paths=['./'], run='', newton=False):
+def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
     """ plots residual ... over iterations """
+    if paths is None:
+        paths = ['./']
+    for i, path in enumerate(paths):
+        offset = 0
+        for ref in range(refs):
+            file_str = path+filename+str(ref)+'.txt'
+            iter_count = pl.array(
+                ex.extract(file_str, ex.NOXIterPattern))+offset
+            offset = iter_count[-1]
+            res = ex.extract(file_str, ex.NOXResPattern)
+            print iter_count
+            print res
+            pl.figure(1)
+            pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                        ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'$\|\mathbf{r}\|$')
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            # pl.savefig('F.pdf', bbox_inches='tight')
+            pl.figure(2)
+            pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                        color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'step width')
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            # pl.savefig('lam.pdf', bbox_inches='tight')
+            #
+            pl.figure(3)
+            pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                        color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'$||\delta\mathbf{q}||$')
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            # pl.savefig('du.pdf', bbox_inches='tight')
+
+
+def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
+    """ plots linear iteration and tolerance """
+    if paths is None:
+        paths = ['./']
+    for i, pre_str in enumerate(paths):
+        offset = 0
+        for ref in range(refs):
+            file_str = pre_str + filename + str(ref) + '.txt'
+            lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
+            linatol = ex.extract(file_str, ex.BelosArTolPattern)
+            print linatol
+            pl.figure()
+            if isinstance(lin_iter, float):  # wtf
+                lin_iter = [lin_iter]
+            pl.plot(pl.arange(1, len(lin_iter)+1) + offset, lin_iter,
+                    marker='.', color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'linear iterations')
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            if leg is not None:
+                pl.legend(leg, loc=0)
+            pl.savefig('liniter.pdf', bbox_inches='tight')
+            #
+            pl.figure()
+            pl.semilogy(pl.arange(1, len(linatol)+1) + offset, linatol,
+                        marker='.', color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'archieved tolerance of the linear solver')
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            if leg is not None:
+                # legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+                pl.legend(leg, loc=0)
+            pl.savefig('lintol.pdf', bbox_inches='tight')
+            offset += len(linatol)
+
+
+def plotNOX(paths=None, filename='output', run='', newton=False):
+    """ plots residual ... over iterations (deprecated) """
+    if paths is None:
+        paths = ['./']
     for path in paths:
-        iter_count = ex.extract(path+'output'+str(run), ex.NOXIterPattern)
-        res = ex.extract(path+'output'+str(run), ex.NOXResPattern)
-        dof = ex.extract(path+'output'+str(run), ex.PimpDofPattern)[0][0]
-        print 'dof: ', dof
+        iter_count = ex.extract(path+filename+str(run), ex.NOXIterPattern)
+        res = ex.extract(path+filename+str(run), ex.NOXResPattern)
+        # dof = ex.extract(path+filename+str(run), ex.PimpDofPattern)[0][0]
+        # print 'dof: ', dof
         print iter_count
         print res
         pl.figure(1)
         # pl.semilogy(iter_count, res[:, 0]/pl.sqrt(dof))
-        pl.semilogy(res[:, 0]/pl.sqrt(dof), marker='.')
+        # pl.semilogy(res[:, 0]/pl.sqrt(dof), marker='.')
+        pl.semilogy(res[:, 0], marker='.')
         if newton:
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
-        pl.ylabel(r'$||\mathbf{F}||_2/\sqrt{N}$')
+        pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$')
         # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         # pl.savefig('F.pdf', bbox_inches='tight')
@@ -38,12 +121,13 @@ def plotNOX(paths=['./'], run='', newton=False):
         # pl.savefig('lam.pdf', bbox_inches='tight')
         #
         pl.figure(3)
-        pl.semilogy(iter_count[1:], res[1:, 2]/pl.sqrt(dof), marker='.')
+        # pl.semilogy(iter_count[1:], res[1:, 2]/pl.sqrt(dof), marker='.')
+        pl.semilogy(iter_count[1:], res[1:, 2], marker='.')
         if newton:
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
-        pl.ylabel(r'$||\delta\mathbf{u}||_2/\sqrt{N}$')
+        pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         # pl.savefig('du.pdf', bbox_inches='tight')
 
@@ -87,7 +171,7 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
-        pl.ylabel(r'$||\mathbf{F}||_2/\sqrt{N}$', ha='left', va='bottom',
+        pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.09, 1.075)
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -114,20 +198,20 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
-        pl.ylabel(r'$||\delta\mathbf{u}||_2/\sqrt{N}$')
+        pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         pl.savefig('du.pdf', bbox_inches='tight')
         #
         #figure(4)
-        ##if(len(iterBelos)==len(linIter)):
-            ##plot(iterBelos[:],linIter[:],label=lab,ls=ls)
-        ##elif(len(iterBelos)-1==len(linIter)):
-            ##plot(iterBelos[1:],linIter[:],marker=m, lw=0.5,label=lab,ls=ls)
+        ##if(len(iterBelos)==len(lin_iter)):
+            ##plot(iterBelos[:],lin_iter[:],label=lab,ls=ls)
+        ##elif(len(iterBelos)-1==len(lin_iter)):
+            ##plot(iterBelos[1:],lin_iter[:],marker=m, lw=0.5,label=lab,ls=ls)
         ##else:
-        #if isinstance(linIter,float) :
-                #linIter=[linIter]
-        #plot(range(1,len(linIter)+1),linIter,marker=m,lw=0.5,ls=ls)
+        #if isinstance(lin_iter,float) :
+                #lin_iter=[lin_iter]
+        #plot(range(1,len(lin_iter)+1),lin_iter,marker=m,lw=0.5,ls=ls)
         #xlabel('Newton iteration')
         #ylabel(r'linear iterations')
         ##legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -146,19 +230,22 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
     #show()
 
 
-def plotBelos(files=['./Picard.txt'], leg=[], run=''):
+def plotBelos(files=None, leg=None):
+    if files is None:
+        files = ['./Picard.txt']
     i = 0
     for file_str in files:
-        linIter = ex.extract(file_str, ex.BelosMaxItPattern)
+        lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
         linatol = ex.extract(file_str, ex.BelosArTolPattern)
         print linatol
         pl.figure(4)
-        if isinstance(linIter, float):  # wtf
-            linIter = [linIter]
-        pl.plot(range(1, len(linIter)+1), linIter, marker='.')
+        if isinstance(lin_iter, float):  # wtf
+            lin_iter = [lin_iter]
+        pl.plot(range(1, len(lin_iter)+1), lin_iter, marker='.')
         pl.xlabel('Picard iteration')
         pl.ylabel(r'linear iterations')
-        pl.legend(leg, loc=0)
+        if leg is not None:
+            pl.legend(leg, loc=0)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         pl.savefig('liniter.pdf', bbox_inches='tight')
         #
@@ -167,13 +254,18 @@ def plotBelos(files=['./Picard.txt'], leg=[], run=''):
         pl.xlabel('Picard iteration')
         pl.ylabel(r'archieved tolerance of the linear solver')
         # legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        pl.legend(leg, loc=0)
+        if leg is not None:
+            pl.legend(leg, loc=0)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         pl.savefig('lintol.pdf', bbox_inches='tight')
         i += 1
 
 
-def plotSpeedup(paths, nps, lab=[], runs=[''],):
+def plotSpeedup(paths, nps, lab=None, runs=None):
+    if lab is None:
+        lab = []
+    if runs is None:
+        runs = ['']
     time = []
     for path in paths:
         temptime = 1e99
@@ -199,7 +291,11 @@ def plotSpeedup(paths, nps, lab=[], runs=[''],):
     pl.gca().yaxis.set_label_coords(-0.05, 1.075)
 
 
-def plotStrongScaling(paths, nps, lab=[], runs=['']):
+def plotStrongScaling(paths, nps, lab=None, runs=None):
+    if lab is None:
+        lab = []
+    if runs is None:
+        runs = ['']
     time = []
     for path in paths:
         temptime = 1e99
@@ -227,7 +323,11 @@ def plotStrongScaling(paths, nps, lab=[], runs=['']):
     pl.gca().yaxis.set_label_coords(-0.05, 1.075)
 
 
-def plotWeakScaling(paths, nps, lab=[], runs=['']):
+def plotWeakScaling(paths, nps, lab=None, runs=None):
+    if lab is None:
+        lab = []
+    if runs is None:
+        runs = ['']
     time = []
     for path in paths:
         temptime = 1e99
@@ -279,9 +379,11 @@ def getTimes(paths, runs, pattern):
     return timeMin, fails, timeMean, timeSTD
 
 
-def plotEfficency(paths, nps, label='', runs=[''],
+def plotEfficency(paths, nps, label='', runs=None,
                   pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10,
                   marker='', linestyle='-', color='b', ms=3):
+    if runs is None:
+        runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
     print ''
     print label
@@ -299,9 +401,11 @@ def plotEfficency(paths, nps, label='', runs=[''],
     return time
 
 
-def addTime(paths, nps, label='', runs=[''], pattern=ex.PimpSolveTimePattern,
+def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
             scale=1, basex=10, basey=10, marker='', linestyle='-', color='',
             ms=3, lw=1.):
+    if runs is None:
+        runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
     print ''
     print label

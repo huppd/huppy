@@ -5,27 +5,27 @@ TODO: include string variables for recurrin patterns
 """
 import re
 import numpy
-#from pylab import *
-inf = 1e9999
+INF = 1e9999
 
 # helper string
-float_str = r"\d+.\d+e{0,1}[-,+]{0,1}\d+"
+float_str = r"[\-]{0,1}\d+.{0,1}\d+e{0,1}[-+]{0,1}\d*"
 int_str = r"\d+"
 
 # lin solver
 BelosIterPattern = re.compile(
-    r"Iter[ ]+("+int_str+"), \[ +"+int_str+"\] :    ("+float_str+")")
+    r"Iter[ ]+(" + int_str + r"), \[ +" + int_str + r"\] :    (" + float_str +
+    r")")
 BelosMaxItPattern = re.compile(
-    r"\s+[OK,Failed]+[.]+Number of Iterations = ("+int_str+") [<,=]+ "+int_str)
+    r"\s+[OK,Failed]+[.]+Number of Iterations = (" + int_str + r") [<=]+ " +
+    int_str)
 BelosArTolPattern = re.compile(
-    r"\s+residual \[ "+int_str+" \] = ("+float_str+") [<>] ")
+    r"\s+residual \[ " + int_str + r" \] = (" + float_str + r") [<>] ")
 
 # nonlin solver
-NOXIterPattern = re.compile(r"-- Nonlinear Solver Step ("+int_str+") -- ")
+NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (" + int_str + r") -- ")
 NOXResPattern = re.compile(
-    r"\|\|F\|\| = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  step = " +
-    "([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)  dx = " +
-    "([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
+    r"\|\|F\|\| = (" + float_str + r")  step = " + r"(" + float_str +
+    r")  dx = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
 
 PimpOmPattern = re.compile(r" \tomega=(\d+.{0,1}\d*)")
 PimpDofPattern = re.compile(r"\t--- Nf: \d+\tdof: (\d+)\t---")
@@ -39,29 +39,44 @@ PimpSolveTimePattern = re.compile(
     r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \(\d+\)")
 PimpSolveTime = re.compile(
     r"Pimpact:: Solving Time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) " +
-    "\((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+" +
-    "(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*" +
-    "e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"\((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+" +
+    r"(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*" +
+    r"e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXCompFTime = re.compile(
-    r"NOX: compute F\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+." +
-    "{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}" +
-    "[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"NOX: compute F\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
+    float_str + r") \((" + int_str + r")\)\s+(" + float_str + r") \((" +
+    int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
 NOXSolveDXTime = re.compile(
-    r"NOX: solve dx\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"NOX: solve dx\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
+    float_str + r") \((" + int_str + r")\)\s+(" + float_str + r") \((" +
+    int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
 NOXUpdateXTime = re.compile(
-    r"NOX: update X\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"NOX: update X\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
+    float_str + r" ) \((" + float_str + r") \((" + int_str + r")\)\s+(" +
+    float_str + r") \((" + int_str + r")\)")
 BelosTotTime = re.compile(
-    r"Compound\( MHDtConvectionDiffusion\, MH_Grad\, MH_Div \): BlockGmresSolMgr total solve time\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"Compound\( MHDtConvectionDiffusion\, MH_Grad\, MH_Div \): " +
+    r"BlockGmresSolMgr total solve time\s+(" + float_str + r") \((" + int_str +
+    r")\)\s+(" + float_str + r") \((" + int_str + r")\)\s+(" + float_str +
+    r") \((" + int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
 FTime = re.compile(
-    r"MHDtConvectionDiffusion: BlockGmresSolMgr total solve time\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"MHDtConvectionDiffusion: BlockGmresSolMgr total solve time\s+" +
+    float_str + r" \(" + int_str + r"\)\s+" + float_str + r" \(" + int_str +
+    r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+(" + float_str + r") \(("
+    + int_str + r")\)")
 DivGradTime = re.compile(
-    r"DivGrad: BlockGmresSolMgr total solve time\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"DivGrad: BlockGmresSolMgr total solve time\s+" + float_str + r" \(" +
+    int_str + r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+" + float_str +
+    r" \(" + int_str + r"\)\s+(" + float_str + r") \((" + int_str + r")\)")
 FZTime = re.compile(
-    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+\d+.{0,1}" +
-    "\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)""\s+\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d* \(\d+\)\s+(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
+    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+" + float_str
+    + r" \(" + int_str + r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+" +
+    float_str + r" \(" + int_str + r"\)\s+(" + float_str + r") \((" + int_str +
+    r")\)")
 
 
 def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
+    """ extractor function """
     m = pattern.groups
     try:
         data = open(datafile).read()
@@ -71,9 +86,9 @@ def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
         #return ['*']
     dat = []
     for line in data.split("\n"):
-            match = pattern.match(line)
-            if match:
-                dat.append(match.groups())
+        match = pattern.match(line)
+        if match:
+            dat.append(match.groups())
     #print( dat )
     n = len(dat)
     #print( n )
@@ -103,6 +118,7 @@ def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
 # and a dot and decimals again: [\-]{0,1}\d+\.\d+
 # and then the same as first..
 def extracttime(path):
+    """ extracts time """
     pattern = re.compile(r'elapsed time \[sec\]  (\d\.\d+E[-,+]\d+)')
     time = extract(path+'/test_wallclocktime_restart000.txt',
                    pattern, isarray=False)
@@ -110,16 +126,17 @@ def extracttime(path):
 
 
 def extractmint(path, runs):
-    t = 1.e999
+    """ extract minimum from multiple runs """
+    time = INF
     fails = 0
-    for r in runs:
-        tnew = extracttime(path+'/run'+str(r))
-        t = min(t, tnew)
-        if tnew == inf:
+    for run in runs:
+        tnew = extracttime(path+'/run'+str(run))
+        time = min(time, tnew)
+        if tnew == INF:
             fails += 1
-            print '\t', float(r)/(len(runs)-1)*100., '% failed'
+            print '\t', float(run)/(len(runs)-1)*100., '% failed'
         else:
-            print '\t', float(r)/(len(runs)-1)*100., '% done'
+            print '\t', float(run)/(len(runs)-1)*100., '% done'
     print fails, 'fails of', len(runs)
     print
-    return t
+    return time

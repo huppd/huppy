@@ -1,4 +1,4 @@
-from pylab import *
+""" streamfunction implemented from matlab """
 import pylab as pl
 
 
@@ -6,30 +6,30 @@ def streamfunction(x, y, u, v):
     """ computes the streamfunction associated with the flowfield (u,v) on the
     cartesian coordinate system (x,y)
      INPUT:
-     x        vector of length Nx with x-coordinates
-     y        vector of length Ny with y-coordinates
-     u        matrix of size (Ny,Nx) with velocities in x-direction
-     y        matrix of size (Ny,Nx) with velocities in y-direction
+     x        vector of length nx with x-coordinates
+     y        vector of length ny with y-coordinates
+     u        matrix of size (ny,nx) with velocities in x-direction
+     y        matrix of size (ny,nx) with velocities in y-direction
      OUTPUT:
-     psi      matrix of size (Ny,Nx) with streamfunction
+     psi      matrix of size (ny,nx) with streamfunction
     """
-    Nx = len(x)
-    Ny = len(y)
+    nx = len(x)
+    ny = len(y)
     #
     psi = pl.zeros(u.shape)
-    psix = pl.zeros(Nx)
+    psix = pl.zeros(nx)
     #
     # inegral of v(x,0) with respect to x
-    for j in range(1, Nx):
+    for j in range(1, nx):
         dx = x[j] - x[j-1]
         psix[j] = psix[j-1] + dx/2 * (v[0, j-1] + v[0, j])
     # inegral of u(x,y) with respect to y
-    for j in range(Nx):
-        for i in range(1, Ny):
+    for j in range(nx):
+        for i in range(1, ny):
             dy = y[i] - y[i-1]
             psi[i, j] = psi[i-1, j] - dy/2 * (u[i-1, j] + u[i, j])
     #%% sum of the two integrals
-    for j in range(1, Nx):
+    for j in range(1, nx):
         psi[:, j] = psi[:, j] + psix[j]
     return psi
 
