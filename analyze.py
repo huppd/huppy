@@ -34,25 +34,28 @@ def compares(paths=None, step=''):
     #
     npath = len(paths)
     for fil in files:
-        means_iter = np.zeros(npath)
-        means_tol = np.zeros(npath)
-        stds_iter = np.zeros(npath)
-        stds_tol = np.zeros(npath)
+        iter_tot = np.zeros(npath)
+        iter_means = np.zeros(npath)
+        tol_means = np.zeros(npath)
+        iter_stds = np.zeros(npath)
+        tol_stds = np.zeros(npath)
         counts = np.zeros(npath)
         print fil, ': ', paths
         for i, path in enumerate(paths):
             stats = ex.extract(path+fil, ex.BelosIterPattern)
             counts[i] = len(stats[:, 0])
             if counts[i] != 0:
-                means_iter[i] = np.mean(stats[:, 0])
-                means_tol[i] = np.mean(stats[:, 1])
-                stds_iter[i] = np.std(stats[:, 0])
-                stds_tol[i] = np.std(stats[:, 1])
+                iter_tot[i] = np.sum(stats[:, 0])
+                iter_means[i] = np.mean(stats[:, 0])
+                tol_means[i] = np.mean(stats[:, 1])
+                iter_stds[i] = np.std(stats[:, 0])
+                tol_stds[i] = np.std(stats[:, 1])
         print 'counts: ', counts
-        print 'iter:   ', means_iter
-        print '+-      ', stds_iter
-        print 'tol:    ', means_tol
-        print '+-      ', stds_tol
+        print 'total:  ', iter_tot
+        print 'iter:   ', iter_means
+        print '+-      ', iter_stds
+        print 'tol:    ', tol_means
+        print '+-      ', tol_stds
         print
     print
 

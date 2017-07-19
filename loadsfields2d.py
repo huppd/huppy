@@ -1,4 +1,4 @@
-""" loads hdf5 fields in 3D"""
+""" loads hdf5 fields in 2D """
 import sys
 from math import pi
 import h5py
@@ -9,82 +9,81 @@ from streamfunction import plot_streamfunction
 import velocity_profiles as vp
 
 
-def lod_sfield(di='.', i=0, fType='S', sType=''):
-    if 'S' == fType:
+def lod_sfield(director='.', num=0, ftype='S', stype=''):
+    """ loads field to numpy array"""
+    if ftype == 'S':
         key = 'pre'
     else:
-        key = 'vel'+fType
-    f = h5py.File(di+'/'+key+sType+'_'+str(i).zfill(5)+'.h5')
-    s = f.get(key).value
-    print(key+': ', s.shape)
+        key = 'vel'+ftype
+    h5file = h5py.File(director+'/'+key+stype+'_'+str(num).zfill(5)+'.h5')
+    field = h5file.get(key).value
+    print(key+': ', field.shape)
     #
-    x = f.get('VectorX').value
-    y = f.get('VectorY').value
-    z = f.get('VectorZ').value
-    return x, y, z, s
+    x = h5file.get('VectorX').value
+    y = h5file.get('VectorY').value
+    return x, y, field
 
 
-def lod_vfield(di='.', i=0, sType=''):
-    u = {'X': 0, 'Y': 0, 'Z': 0}
-    for field in ['X', 'Y', 'Z']:
-        x, y, z, f = lod_sfield(di=di, i=i, fType=field, sType=sType)
-        u[field] = f
-    return x, y, z, u
+def lod_vfield(director='.', num=0, stype=''):
+    """ loads vector fields to numpy array """
+    vec = {'X': 0, 'Y': 0}
+    for field in ['X', 'Y']:
+        x, y, f = lod_sfield(director=director, num=num, ftype=field,
+                             stype=stype)
+        vec[field] = f
+    return x, y, vec
 
 
-def plot_vfield(x, y, z, u, Z=1, I=1):
+def plot_vfield(x, y, u, I=1):
     pl.figure()
     pl.gca().set_aspect('equal')
-    M = pl.sqrt(u['X'][Z, ::I, ::I]**2+u['Y'][Z, ::I, ::I]**2)
-    #pl.quiver(y[::I], y[::I], u['X'][Z, ::I, ::I], u['Y'][Z, ::I, ::I], M)
-    pl.quiver(u['X'][Z, ::I, ::I], u['Y'][Z, ::I, ::I], M)
-    pl.xlabel('y')
-    pl.ylabel('X')
+    M = pl.sqrt(u['X'][::I, ::I]**2+u['Y'][::I, ::I]**2)
+    pl.quiver(x[::I], y[::I], u['X'][::I, ::I], u['Y'][::I, ::I], M)
+    pl.xlabel(r'$x$')
+    pl.ylabel(r'$y$')
     pl.colorbar()
     pl.show()
 
 
-def plot_sfield(x, y, z, p, Z=1, I=1):
+def plot_sfield(x, y, p, Z=1, I=1):
     pl.figure()
     pl.gca().set_aspect('equal')
-    #pl.pcolor(x[::I], y[::I], p[::I, ::I])
-    pl.pcolor(p[Z, ::I, ::I])
-    #pl.contour(x, y, p[Z, :, :], 20, colors='k')
-    pl.contour(p[Z, :, :], 20, colors='k')
-    pl.xlabel('x')
-    pl.ylabel('y')
+    pl.pcolor(x[::I], y[::I], p[::I, ::I])
+    pl.contour(x, y, p[:, :], 20, colors='k')
+    pl.xlabel(r'$x$')
+    pl.ylabel(r'$y$')
     pl.colorbar()
     pl.show()
 
 
-def lodnplot_sfield(di='.', i=0, I=1, fType='S'):
-    x, y, u = lod_sfield(di, i, fType)
+def lodnplot_sfield(di='.', num=0, I=1, ftype='S'):
+    x, y, u = lod_sfield(di, num, ftype)
     plot_sfield(x, y, u, I)
     return x, y, u
 
 
-def lodnplot_vfield(di='.', i=0, I=1):
-    x, y, u = lod_vfield(di, i)
+def lodnplot_vfield(director='.', num=0, I=1):
+    x, y, u = lod_vfield(director, num)
     plot_vfield(x, y, u, I)
     return x, y, u
 
 
-def lodnplot_stream(di='.', i=0):
-    x, y, u = lod_vfield(di, i)
+def lodnplot_stream(di='.', num=0):
+    x, y, u = lod_vfield(di, num)
     plot_stream(x, y, u)
     return x, y, u
 
 
-def lodnplot_streamfunc(di='.', i=0):
-    x, y, u = lod_vfield(di, i)
+def lodnplot_streamfunc(di='.', num=0):
+    x, y, u = lod_vfield(di, num)
     plot_streamfunction(x, y, u['X'], u['Y'])
     return x, y, u
 
 
-def lodnplots_streamfunc(di='.', i=0, nf=1):
+def lodnplots_streamfunc(di='.', num=0, nf=1):
     for m in range(2*nf+1):
         pl.figure()
-        lodnplot_streamfunc(di, i=i+m)
+        lodnplot_streamfunc(di, num=num+m)
         #pl.xlim((0.75, 4.75))
         if m == 0:
             pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_0)$')
@@ -97,8 +96,8 @@ def lodnplots_streamfunc(di='.', i=0, nf=1):
             pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
 
 
-def lodnplot_mstreamfunc(di='.', i=0, I=1, nf=1, t=0):
-    x, y, u = lod_mvfield(di=di, i=i, nf=nf, t=t)
+def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
+    x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     plot_streamfunction(x, y, u['X'], u['Y'])
     #pl.figure()
     #pl.plot(x, u['X'][0,:],'.', label=r'$t='+str(t/pl.pi)+'\pi$')
@@ -112,13 +111,13 @@ def lodnplot_mstreamfunc(di='.', i=0, I=1, nf=1, t=0):
     return x, y, u
 
 
-def lod_mvfield(di='.', i=0, nf=1, t=0):
-    x, y, u = lod_vfield(di, i)
+def lod_mvfield(di='.', num=0, nf=1, t=0):
+    x, y, u = lod_vfield(di, num)
     print('0 mode:  \tnorm:\t' + str(pl.norm(pl.norm(u['X']) + pl.norm(u['Y'])
           + pl.norm(u['Z']))))
     for m in range(nf):
-        x, y, uc = lod_vfield(di, 2*m+1+i)
-        x, y, us = lod_vfield(di, 2*m+2+i)
+        x, y, uc = lod_vfield(di, 2*m+1+num)
+        x, y, us = lod_vfield(di, 2*m+2+num)
         norc = 0
         nors = 0
         for f in ['X', 'Y', 'Z']:
@@ -130,14 +129,14 @@ def lod_mvfield(di='.', i=0, nf=1, t=0):
     return x, y, u
 
 
-def plot_energyspec(di='.', i=0, nf=1):
+def plot_energyspec(di='.', num=0, nf=1):
     e = pl.empty(nf+1)
-    x, y, z, u = lod_vfield(di, i)
+    x, y, z, u = lod_vfield(di, num)
     e[0] = pl.sqrt(pl.norm(u['X'])**2 + pl.norm(u['Y'])**2 +
                    pl.norm(u['Z'])**2)
     for m in range(nf):
-        x, y, z, uc = lod_vfield(di, i=2*m+1+i)
-        x, y, z, us = lod_vfield(di, i=2*m+2+i)
+        x, y, z, uc = lod_vfield(di, num=2*m+1+num)
+        x, y, z, us = lod_vfield(di, num=2*m+2+num)
         norc = 0
         nors = 0
         for f in ['X', 'Y', 'Z']:
@@ -155,9 +154,9 @@ def plot_energyspec(di='.', i=0, nf=1):
     #return x, y, u
 
 
-def lodnplot_mumodeprof(di='.', i=0, I=1, nf=1, t=0):
+def lodnplot_mumodeprof(di='.', num=0, I=1, nf=1, t=0):
     #pl.figure()
-    x, y, u = lod_mvfield(di=di, i=i, nf=nf, t=t)
+    x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     pl.plot(x, u['X'][0, :], ',-',  label=r'$t='+str(t/pl.pi)+'\pi$')
     #pl.title(r'$t='+str(t/pl.pi)+'\pi$')
     pl.xlabel(r'$x$')
@@ -167,8 +166,8 @@ def lodnplot_mumodeprof(di='.', i=0, I=1, nf=1, t=0):
     return x, y, u
 
 
-def lodnplot_mvfield(di='.', i=0, I=1, nf=1, t=0):
-    x, y, u = lod_mvfield(di=di, i=i, nf=nf, t=t)
+def lodnplot_mvfield(di='.', num=0, I=1, nf=1, t=0):
+    x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     plot_vfield(x, y, u, I)
     #pl.figure()
     #pl.plot(x, u['X'][0, :], '.', label=r'$t='+str(t/pl.pi)+'\pi$')
@@ -180,8 +179,8 @@ def lodnplot_mvfield(di='.', i=0, I=1, nf=1, t=0):
     return x, y, u
 
 
-def lodnplot_mumodebug(di='.', i=0, I=1, nf=8, Nt=16):
-    x, y, u = lod_vfield(di,  i)
+def lodnplot_mumodebug(di='.', num=0, I=1, nf=8, Nt=16):
+    x, y, u = lod_vfield(di,  num)
     ts = pl.linspace(0, 2*pi, Nt+1)
     up = pl.zeros([len(x), len(ts)])
     for i in range(len(ts)):
@@ -190,7 +189,7 @@ def lodnplot_mumodebug(di='.', i=0, I=1, nf=8, Nt=16):
           + pl.norm(u['Z']))))
     for m in range(nf):
         x, y, uc = lod_vfield(di, 2*m+1+i)
-        x, y, us = lod_vfield(di, 2*m+2+i)
+        x, y, us = lod_vfield(di, 2*m+2+num)
         norc = 0
         nors = 0
         norc += pl.norm(uc['X'])
@@ -221,10 +220,10 @@ def plot_stream(x, y, u):
     pl.show()
 
 
-def lod_vdif(di1='.', di2='.', i1=0, i2=0):
+def lod_vdif(di1='.', di2='.', num1=0, num2=0):
     e = {'X': 0, 'Y': 0, 'Z': 0}
-    x, y, u1 = lod_vfield(di1, i1)
-    x, y, u2 = lod_vfield(di2, i2)
+    x, y, u1 = lod_vfield(di1, num1)
+    x, y, u2 = lod_vfield(di2, num2)
     e['X'] = u1['X']-u2['X']
     e['Y'] = u1['Y']-u2['Y']
     e['Z'] = pl.sqrt(e['X']**2 + e['Y']**2)
@@ -244,8 +243,8 @@ def plot_vdif(x, y, e):
     pl.show()
 
 
-def lodnplot_vdif(di1='.', di2='.', i1=0, i2=0):
-    x, y, e = lod_vdif(di1, di2, i1, i2)
+def lodnplot_vdif(di1='.', di2='.', num1=0, num2=0):
+    x, y, e = lod_vdif(di1, di2, num1, num2)
     plot_vdif(x, y, e)
 
 
@@ -418,10 +417,10 @@ if __name__ == "__main__":
         i = sys.argv[1]
     print i
     #
-    di = '.'
+    DIRECTOR = '.'
     if(len(sys.argv) > 2):
-        di = sys.argv[2]
-    print(di)
+        DIRECTOR = sys.argv[2]
+    print(DIRECTOR)
     #
-    x, y, u = lod_vfield(di, i)
-    plot_vfield(x, y, u)
+    X, Y, U = lod_vfield(DIRECTOR, i)
+    plot_vfield(X, Y, U)
