@@ -60,8 +60,8 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, refine='0',
                                     color=COLORS[i], refine=refine,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
-    pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-               bbox_inches='tight')
+    # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+               # bbox_inches='tight')
 
 
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
@@ -114,6 +114,25 @@ def plot_vs(path='./', refs=1):
         for i, field in enumerate(fields):
             digdeep(path=path, prefix=prefix+field, refs=refs, color=COLORS[i],
                     ls=LINES[i])
+        pl.savefig(prefix + '.pdf')
+
+
+def plot_engergy_spectrum(path='./', ref=0, iters=None):
+    """ plots development of each norm over Picards iteration, corresponds to
+    NOXPrePostSpecturm
+    """
+    if iters is None:
+        iters = [0]
+    prefix = 'xv'
+    pl.figure()
+    pl.ylabel(r'$\|\mathbf{e}\|$')
+    pl.xlabel(r'mode')
+    pl.gca().get_xaxis().set_major_locator(
+        pl.MaxNLocator(integer=True))
+    for i in iters:
+        spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
+        print spec
+        pl.semilogy(spec[:, 0], spec[:, 1])
 
 
 if __name__ == "__main__":

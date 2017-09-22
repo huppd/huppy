@@ -75,7 +75,7 @@ FZTime = re.compile(
     r")\)")
 
 
-def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
+def extract(datafile, pattern, isfloat=True, isarray=True, outfile=''):
     """ extractor function """
     m = pattern.groups
     try:
@@ -134,9 +134,6 @@ def extractmint(path, runs):
         time = min(time, tnew)
         if tnew == INF:
             fails += 1
-            print '\t', float(run)/(len(runs)-1)*100., '% failed'
-        else:
-            print '\t', float(run)/(len(runs)-1)*100., '% done'
     print fails, 'fails of', len(runs)
     print
     return time

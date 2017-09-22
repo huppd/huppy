@@ -5,10 +5,16 @@ import extractor as ex
 from plotting_constants import COLORS, MARKERC, LINES, LINEC
 
 
-def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
+def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
     """ plots residual ... over iterations """
+    legend_yes = True
+    if labels is None:
+        labels = paths
+        legend_yes = False
     if paths is None:
         paths = ['./']
+        labels = paths
+        legend_yes = False
     for i, path in enumerate(paths):
         offset = 0
         for ref in range(refs):
@@ -20,8 +26,14 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
             print iter_count
             print res
             pl.figure(1)
-            pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
-                        ls=LINES[i])
+            if ref == 0:
+                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                            ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                            ls=LINES[i])
             pl.xlabel('Picard iteration')
             pl.ylabel(r'$\|\mathbf{r}\|$')
             pl.gca().get_xaxis().set_major_locator(
@@ -29,24 +41,36 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            # pl.savefig('F.pdf', bbox_inches='tight')
+            pl.savefig('F.pdf', bbox_inches='tight')
             pl.figure(2)
-            pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
-                        color=COLORS[i], ls=LINES[i])
+            if ref == 0:
+                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                            color=COLORS[i], ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                            color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
             pl.ylabel(r'step width')
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            # pl.savefig('lam.pdf', bbox_inches='tight')
+            pl.savefig('lam.pdf', bbox_inches='tight')
             #
             pl.figure(3)
-            pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
-                        color=COLORS[i], ls=LINES[i])
+            if ref == 0:
+                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                            color=COLORS[i], ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                            color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
             pl.ylabel(r'$||\delta\mathbf{q}||$')
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            # pl.savefig('du.pdf', bbox_inches='tight')
+            pl.savefig('du.pdf', bbox_inches='tight')
 
 
 def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
@@ -381,7 +405,7 @@ def getTimes(paths, runs, pattern):
 
 def plotEfficency(paths, nps, label='', runs=None,
                   pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10,
-                  marker='', linestyle='-', color='b', ms=3):
+                  marker='', linestyle='-', color='b'):
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
@@ -394,16 +418,15 @@ def plotEfficency(paths, nps, label='', runs=None,
     for i in range(len(time)):
         efficency[i] = time[0]/time[i]/nps[i]
     if len(label) == 0:
-        pl.plot(nps, efficency, '.-', ms=ms, linestyle=linestyle, color=color)
+        pl.plot(nps, efficency, '.-', linestyle=linestyle, color=color)
     else:
-        pl.semilogx(nps, efficency, '.-', ms=ms, label=label, marker=marker,
-                    linestyle=linestyle, linewidth=1., color=color)
+        pl.semilogx(nps, efficency, '.-', label=label, marker=marker,
+                    linestyle=linestyle, color=color)
     return time
 
 
 def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
-            scale=1, basex=10, basey=10, marker='', linestyle='-', color='',
-            ms=3, lw=1.):
+            scale=1, basex=10, basey=10, marker='', linestyle='-', color=''):
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
@@ -417,11 +440,11 @@ def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
     # errorbar(log(nps), log(timeMean), log(timeSTD))
     # errorbar(log(nps), log(time), log(timeSTD))
     if len(color) == 0:
-        pl.loglog(nps, pl.array(time)*scale, ms=ms, label=label, basex=basex,
-                  basey=basey, marker=marker, linestyle=linestyle, lw=lw)
+        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
+                  basey=basey, marker=marker, linestyle=linestyle)
     else:
-        pl.loglog(nps, pl.array(time)*scale, ms=ms, label=label, basex=basex,
-                  basey=basey, marker=marker, linestyle=linestyle, lw=lw,
+        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
+                  basey=basey, marker=marker, linestyle=linestyle,
                   color=color)
     pl.legend(loc=0)
     return time

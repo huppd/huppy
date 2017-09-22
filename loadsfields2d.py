@@ -86,13 +86,13 @@ def lodnplots_streamfunc(di='.', num=0, nf=1):
         lodnplot_streamfunc(di, num=num+m)
         #pl.xlim((0.75, 4.75))
         if m == 0:
-            pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_0)$')
+            pl.title(r'$\hat{\mathbf{u}}_0$')
             pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
-            pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_'+str((m+1)/2)+')$')
+            pl.title(r'$\hat{\mathbf{u}}^s_'+str((m+1)/2)+'$')
             pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
         else:
-            pl.title(r'$\mathcal{I}(\hat{\mathbf{u}}_'+str((m+1)/2)+')$')
+            pl.title(r'$\hat{\mathbf{u}}^c_'+str((m+1)/2)+'$')
             pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
 
 
