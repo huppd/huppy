@@ -89,10 +89,10 @@ def lodnplots_streamfunc(di='.', num=0, nf=1):
             pl.title(r'$\hat{\mathbf{u}}_0$')
             pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
-            pl.title(r'$\hat{\mathbf{u}}^s_'+str((m+1)/2)+'$')
+            pl.title(r'$\hat{\mathbf{u}}^s_{'+str((m+1)/2)+'}$')
             pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
         else:
-            pl.title(r'$\hat{\mathbf{u}}^c_'+str((m+1)/2)+'$')
+            pl.title(r'$\hat{\mathbf{u}}^c_{'+str((m+1)/2)+'}$')
             pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
 
 
@@ -418,7 +418,7 @@ if __name__ == "__main__":
     print i
     #
     DIRECTOR = '.'
-    if(len(sys.argv) > 2):
+    if len(sys.argv) > 2:
         DIRECTOR = sys.argv[2]
     print(DIRECTOR)
     #
