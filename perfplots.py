@@ -17,8 +17,17 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
         legend_yes = False
     for i, path in enumerate(paths):
         offset = 0
+        if refs == 0:
+            refs = 1
+            no_ref = True
+        else:
+            no_ref = False
         for ref in range(refs):
-            file_str = path+filename+str(ref)+'.txt'
+            if no_ref:
+                ref_str = ''
+            else:
+                ref_str = str(ref)
+            file_str = path+filename+ref_str+'.txt'
             iter_count = pl.array(
                 ex.extract(file_str, ex.NOXIterPattern))+offset
             offset = iter_count[-1]
@@ -35,8 +44,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
                 pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                             ls=LINES[i])
             pl.xlabel('Picard iteration')
-            pl.ylabel(r'$\|\mathbf{r}\|$', ha='left', va='bottom', rotation=0)
-            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+            pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
@@ -53,8 +62,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
                 pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
                             color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
-            pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
-            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+            pl.ylabel(r'step width', ha='right', va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             pl.savefig('lam.pdf', bbox_inches='tight')
@@ -69,8 +78,9 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
                 pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
                             color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
-            pl.ylabel(r'$||\delta\mathbf{q}||$', ha='left', va='bottom', rotation=0)
-            pl.gca().yaxis.set_label_coords(-0.08, 1.03)
+            pl.ylabel(r'$||\delta\mathbf{q}||$', ha='right', va='bottom',
+                      rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.03)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             pl.savefig('du.pdf', bbox_inches='tight')

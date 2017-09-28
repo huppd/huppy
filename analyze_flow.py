@@ -9,7 +9,8 @@ def _plot_sugar(direc, emin, emax):
     pl.xlim(xmin=emin)
     pl.xlim(xmax=emax)
     pl.xlabel(r'$'+direc.lower()+'$')
-    pl.ylabel('energy')
+    pl.ylabel('energy', ha='left', va='bottom', rotation=0)
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
 
 
 def load_energy_dir(path='./', direc='Y', refine='0', field='0',
@@ -103,11 +104,12 @@ def plot_vs(path='./', refs=1):
     for prefix in prefixes:
         pl.figure()
         if prefix == 'x':
-            pl.ylabel(r'$\|\mathbf{q}\|$')
+            pl.ylabel(r'$\|\mathbf{q}\|$', ha='left', va='bottom', rotation=0)
         elif prefix == 'res':
-            pl.ylabel(r'$\|\mathbf{r}\|$')
+            pl.ylabel(r'$\|\mathbf{r}\|$', ha='left', va='bottom', rotation=0)
         elif prefix == 'cor':
-            pl.ylabel(r'$\|\delta \mathbf{q}\|$')
+            pl.ylabel(r'$\|\delta \mathbf{q}\|$', ha='left', va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.xlabel(r'iteration step')
         pl.gca().get_xaxis().set_major_locator(
             pl.MaxNLocator(integer=True))
@@ -117,22 +119,22 @@ def plot_vs(path='./', refs=1):
         pl.savefig(prefix + '.pdf')
 
 
-def plot_engergy_spectrum(path='./', ref=0, iters=None):
+def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv'):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
     if iters is None:
         iters = [0]
-    prefix = 'xv'
-    pl.figure()
-    pl.ylabel(r'$\|\mathbf{e}\|$')
+    
+    pl.ylabel(r'$\|\mathbf{e}\|$', ha='left', va='bottom', rotation=0)
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
     pl.xlabel(r'mode')
     pl.gca().get_xaxis().set_major_locator(
         pl.MaxNLocator(integer=True))
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
         print spec
-        pl.semilogy(spec[:, 0], spec[:, 1])
+        pl.semilogy(spec[:, 0], spec[:, 1], marker='.')
 
 
 if __name__ == "__main__":
