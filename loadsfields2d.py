@@ -113,14 +113,14 @@ def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
 
 def lod_mvfield(di='.', num=0, nf=1, t=0):
     x, y, u = lod_vfield(di, num)
-    print('0 mode:  \tnorm:\t' + str(pl.norm(pl.norm(u['X']) + pl.norm(u['Y'])
-          + pl.norm(u['Z']))))
+    print('0 mode:  \tnorm:\t' + str(pl.norm(pl.norm(u['X']) +
+          pl.norm(u['Y']))))
     for m in range(nf):
         x, y, uc = lod_vfield(di, 2*m+1+num)
         x, y, us = lod_vfield(di, 2*m+2+num)
         norc = 0
         nors = 0
-        for f in ['X', 'Y', 'Z']:
+        for f in ['X', 'Y']:
             norc += pl.norm(uc[f])
             nors += pl.norm(us[f])
             u[f] += uc[f]*cos((m+1)*t)+us[f]*sin((m+1)*t)

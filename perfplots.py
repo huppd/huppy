@@ -15,13 +15,13 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
         paths = ['./']
         labels = paths
         legend_yes = False
+    if refs == 0:
+        refs = 1
+        no_ref = True
+    else:
+        no_ref = False
     for i, path in enumerate(paths):
         offset = 0
-        if refs == 0:
-            refs = 1
-            no_ref = True
-        else:
-            no_ref = False
         for ref in range(refs):
             if no_ref:
                 ref_str = ''
