@@ -6,10 +6,11 @@ import extractor as ex
 def analyze(step=''):
     """ analyze """
     #
-    files = ['Picard'+step+'.txt', 'MHDtConvectionDiffusion'+step+'.txt',
+    files = ['Picard'+step+'.txt',
+             'MHDtConvectionDiffusion'+step+'.txt',
+             'DivGrad'+step+'.txt',
              'ModeNonlinearOp_ConvectionDiffusionVOp'+step+'.txt',
-             'ConvectionDiffusionVOp'+step+'.txt',
-             'DivGrad'+step+'.txt']
+             'ConvectionDiffusionVOp'+step+'.txt']
     #
     for fil in files:
         stats = ex.extract(fil, ex.BelosIterPattern)
