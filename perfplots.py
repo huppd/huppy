@@ -43,7 +43,7 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             else:
                 pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                             ls=LINES[i])
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
             pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
@@ -61,7 +61,7 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             else:
                 pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
                             color=COLORS[i], ls=LINES[i])
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
             pl.ylabel(r'step width', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
@@ -77,7 +77,7 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             else:
                 pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
                             color=COLORS[i], ls=LINES[i])
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
             pl.ylabel(r'$||\delta\mathbf{q}||$', ha='right', va='bottom',
                       rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.03)
@@ -102,7 +102,7 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
                 lin_iter = [lin_iter]
             pl.plot(pl.arange(1, len(lin_iter)+1) + offset, lin_iter,
                     marker='.', color=COLORS[i], ls=LINES[i])
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
             pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(-0.08, 1.02)
             pl.gca().get_xaxis().set_major_locator(
@@ -114,7 +114,7 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
             pl.figure()
             pl.semilogy(pl.arange(1, len(linatol)+1) + offset, linatol,
                         marker='.', color=COLORS[i], ls=LINES[i])
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
             pl.ylabel(r'archieved tolerance of the linear solver', ha='left',
                       va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(-0.08, 1.02)
@@ -143,9 +143,9 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         # pl.semilogy(res[:, 0]/pl.sqrt(dof), marker='.')
         pl.semilogy(res[:, 0], marker='.')
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
@@ -154,9 +154,9 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         pl.figure(2)
         pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.')
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
@@ -166,9 +166,9 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         # pl.semilogy(iter_count[1:], res[1:, 2]/pl.sqrt(dof), marker='.')
         pl.semilogy(iter_count[1:], res[1:, 2], marker='.')
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
@@ -211,9 +211,9 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         #pl.semilogy(iter[:],res[:,0], label=lab,ls=ls)
         pl.semilogy(iter, res[:, 0], ls=ls)
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
@@ -226,9 +226,9 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         #semilogy(iter[:],res[:,1],basey=2, label=lab,ls=ls,marker=m)
         pl.semilogy(iter[1:], res[1:, 1], basey=2, ls=ls, marker=m)
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
@@ -239,9 +239,9 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         #semilogy(iter[:],res[:,2],label=lab,ls=ls ,marker=m)
         pl.semilogy(iter[1:], res[1:, 2], ls=ls, marker=m)
         if newton:
-            pl.xlabel('Newton iteration')
+            pl.xlabel('Newton step')
         else:
-            pl.xlabel('Picard iteration')
+            pl.xlabel('Picard step')
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
@@ -288,7 +288,7 @@ def plotBelos(files=None, leg=None):
         if isinstance(lin_iter, float):  # wtf
             lin_iter = [lin_iter]
         pl.plot(range(1, len(lin_iter)+1), lin_iter, marker='.')
-        pl.xlabel('Picard iteration')
+        pl.xlabel('Picard step')
         pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         if leg is not None:
@@ -298,7 +298,7 @@ def plotBelos(files=None, leg=None):
         #
         pl.figure(5)
         pl.semilogy(range(1, len(linatol)+1), linatol, marker='.')
-        pl.xlabel('Picard iteration')
+        pl.xlabel('Picard step')
         pl.ylabel(r'archieved tolerance of the linear solver', ha='left',
                   va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)

@@ -3,14 +3,14 @@ import numpy as np
 import extractor as ex
 
 
-def analyze(step=''):
+def analyze(ref=''):
     """ analyze """
     #
-    files = ['Picard'+step+'.txt',
-             'MHDtConvectionDiffusion'+step+'.txt',
-             'DivGrad'+step+'.txt',
-             'ModeNonlinearOp_ConvectionDiffusionVOp'+step+'.txt',
-             'ConvectionDiffusionVOp'+step+'.txt']
+    files = ['Picard'+ref+'.txt',
+             'MHDtConvectionDiffusion'+ref+'.txt',
+             'DivGrad'+ref+'.txt',
+             'ModeNonlinearOp_ConvectionDiffusionVOp'+ref+'.txt',
+             'ConvectionDiffusionVOp'+ref+'.txt']
     #
     for fil in files:
         stats = ex.extract(fil, ex.BelosIterPattern)
@@ -23,15 +23,15 @@ def analyze(step=''):
         print
 
 
-def compares(paths=None, step=''):
+def compares(paths=None, ref=''):
     """ compares different folders """
     if paths is None:
         paths = ['./']
     #
-    files = ['Picard'+step+'.txt', 'MHDtConvectionDiffusion'+step+'.txt',
-             'DivGrad'+step+'.txt',
-             'ModeNonlinearOp_ConvectionDiffusionVOp'+step+'.txt',
-             'ConvectionDiffusionVOp'+step+'.txt']
+    files = ['Picard'+ref+'.txt', 'MHDtConvectionDiffusion'+ref+'.txt',
+             'DivGrad'+ref+'.txt',
+             'ModeNonlinearOp_ConvectionDiffusionVOp'+ref+'.txt',
+             'ConvectionDiffusionVOp'+ref+'.txt']
     #
     npath = len(paths)
     for fil in files:

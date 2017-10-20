@@ -13,35 +13,36 @@ def _plot_sugar(direc, emin, emax):
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
 
 
-def load_energy_dir(path='./', direc='Y', refine='0', field='0',
+def load_energy_dir(path='./', direc='Y', ref='0', field='0',
                     iteration='0'):
     """ load energy profile """
-    return pl.loadtxt(path + 'energy_' + direc + '_r' + refine + '_i' +
+    return pl.loadtxt(path + 'energy_' + direc + '_r' + ref + '_i' +
                       iteration + '_' + field + '.txt')
 
 
-def plot_energy_dir(path='./', direc='Y', field='0', refine='0', iteration='0',
+def plot_energy_dir(path='./', direc='Y', field='0', ref='0', iteration='0',
                     ls='-', color='b', label=''):
     """ plot energy profile """
     energy = load_energy_dir(path=path, direc=direc, field=field,
-                             iteration=iteration, refine=refine)
+                             iteration=iteration, ref=ref)
+    # pl.semilogy(energy[:, 0], energy[:, 1]*pl.sqrt(2.), ls=ls, color=color, label=label)
     pl.semilogy(energy[:, 0], energy[:, 1], ls=ls, color=color, label=label)
     _plot_sugar(direc, energy[0, 0], energy[-1, 0])
 
 
-def plot_modeenergy_dir(path='./', direc='Y', field='1', refine='0',
+def plot_modeenergy_dir(path='./', direc='Y', field='1', ref='0',
                         iteration='0', ls='-', color='b', label=''):
     """ plot energy profile """
     cenergy = load_energy_dir(path=path, direc=direc, field='C'+field,
-                              iteration=iteration, refine=refine)
+                              iteration=iteration, ref=ref)
     senergy = load_energy_dir(path=path, direc=direc, field='S'+field,
-                              iteration=iteration, refine=refine)
+                              iteration=iteration, ref=ref)
     pl.semilogy(cenergy[:, 0], cenergy[:, 1]+senergy[:, 1], ls=ls, color=color,
                 label=label)
     _plot_sugar(direc, cenergy[0, 0], cenergy[-1, 0])
 
 
-def plot_energy_dir_all(path='./', direc='Y', fields=None, refine='0',
+def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                         iterations=None):
     """ plot multipletimes """
     if fields is None:
@@ -53,12 +54,12 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, refine='0',
             if field == '0':
                 plot_energy_dir(path=path, direc=direc, field=field,
                                 iteration=iteration, ls=LINES[j],
-                                color=COLORS[i], refine=refine,
+                                color=COLORS[i], ref=ref,
                                 label=r'$u_'+field+'^{('+iteration+')}$')
             else:
                 plot_modeenergy_dir(path=path, direc=direc, field=field,
                                     iteration=iteration, ls=LINES[j],
-                                    color=COLORS[i], refine=refine,
+                                    color=COLORS[i], ref=ref,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
     # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
@@ -119,22 +120,21 @@ def plot_vs(path='./', refs=1):
         pl.savefig(prefix + '.pdf')
 
 
-def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv'):
+def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv', ls='-'):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
     if iters is None:
         iters = [0]
-    
-    pl.ylabel(r'$\|\mathbf{e}\|$', ha='left', va='bottom', rotation=0)
+    pl.ylabel(r'$\|\hat{\mathbf{u}}_k\|$', ha='left', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-    pl.xlabel(r'mode')
+    pl.xlabel(r'$k$')
     pl.gca().get_xaxis().set_major_locator(
         pl.MaxNLocator(integer=True))
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
         print spec
-        pl.semilogy(spec[:, 0], spec[:, 1], marker='.')
+        pl.semilogy(spec[:, 0], spec[:, 1], marker='.', ls=ls)
 
 
 if __name__ == "__main__":
