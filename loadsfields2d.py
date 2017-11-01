@@ -86,7 +86,7 @@ def lodnplots_streamfunc(di='.', num=0, nf=1):
         lodnplot_streamfunc(di, num=num+m)
         #pl.xlim((0.75, 4.75))
         if m == 0:
-            pl.title(r'$\hat{\mathbf{u}}^0$')
+            pl.title(r'$\hat{\mathbf{u}}_0$')
             pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
             pl.title(r'$\hat{\mathbf{u}}^s_{'+str((m+1)/2)+'}$')
@@ -146,7 +146,7 @@ def plot_energyspec(di='.', num=0, nf=1):
     pl.semilogy(e)
     pl.grid(True)
     pl.xlabel(r'mode: $k$')
-    pl.ylabel(r'$e=|| \mathbf{\hat{u}}_k||$', ha='right', va='bottom',
+    pl.ylabel(r'$e=\|\mathbf{\hat{u}}_k\|$', ha='right', va='bottom',
               rotation=0)
     pl.gca().yaxis.set_label_coords(-0.1, 1.02)
     #print('c mode:  '+str(m+1)+'\tnorm:\t'+str(norc))
@@ -239,7 +239,7 @@ def plot_vdif(x, y, e):
     pl.colorbar()
     pl.xlabel(r'$x$')
     pl.ylabel(r'$y$')
-    print('||e||_2 =',  pl.norm(e['Z']))
+    print('\|e\|_2 =',  pl.norm(e['Z']))
     pl.show()
 
 

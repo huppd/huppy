@@ -7,7 +7,7 @@ def analyze(ref=''):
     """ analyze """
     #
     files = ['Picard'+ref+'.txt',
-             'MHDtConvectionDiffusion'+ref+'.txt',
+             # 'MHDtConvectionDiffusion'+ref+'.txt',
              'DivGrad'+ref+'.txt',
              'ModeNonlinearOp_ConvectionDiffusionVOp'+ref+'.txt',
              'ConvectionDiffusionVOp'+ref+'.txt']

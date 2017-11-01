@@ -69,12 +69,17 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
     """ analyze deep """
     offset = 0
-    for ref in range(refs):
-        iters = int(ex.extract(path + 'nonlinear' + str(ref) + '.txt',
-                               ex.NOXIterPattern)[-1][0]) + 1
+    for ref in range(max(refs, 1)):
+        if refs == 0:
+            ref = 0
+            iters = int(ex.extract(path + 'nonlinear.txt',
+                                   ex.NOXIterPattern)[-1][0]) + 1
+        else:
+            iters = int(ex.extract(path + 'nonlinear' + str(ref) + '.txt',
+                                   ex.NOXIterPattern)[-1][0]) + 1
         print iters
         n_modes = 0
-        bla = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(0)+'.txt')
+        bla = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(1)+'.txt')
         if bla.ndim == 1:
             n_modes = 1
         else:
@@ -82,7 +87,7 @@ def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
         print n_modes
         print bla
         norms = pl.zeros([iters, n_modes])
-        for i in range(iters):
+        for i in range(1, iters):
             print pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
             if n_modes == 1:
                 norms[i, :] = \
