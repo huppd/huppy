@@ -20,6 +20,11 @@ def load_energy_dir(path='./', direc='Y', ref='0', field='0',
                       iteration + '_' + field + '.txt')
 
 
+def load_energy_he(path='./', field='0'):
+    """ load energy profile """
+    return pl.loadtxt(path + 'energy_' + field + '.txt')
+
+
 def plot_energy_dir(path='./', direc='Y', field='0', ref='0', iteration='0',
                     ls='-', color='b', label=''):
     """ plot energy profile """
@@ -28,6 +33,7 @@ def plot_energy_dir(path='./', direc='Y', field='0', ref='0', iteration='0',
     # pl.semilogy(energy[:, 0], energy[:, 1]*pl.sqrt(2.), ls=ls, color=color, label=label)
     pl.semilogy(energy[:, 0], energy[:, 1], ls=ls, color=color, label=label)
     _plot_sugar(direc, energy[0, 0], energy[-1, 0])
+
 
 
 def plot_modeenergy_dir(path='./', direc='Y', field='1', ref='0',
@@ -61,6 +67,32 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                                     iteration=iteration, ls=LINES[j],
                                     color=COLORS[i], ref=ref,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
+    pl.legend(loc=0)
+    # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+               # bbox_inches='tight')
+
+
+def he_energy(path='./', fields=None, modes=None):
+    """ plot multipletimes """
+    if fields is None:
+        fields = ['0']
+    if modes is None:
+        modes = [1, 3]
+    for i, field in enumerate(fields):
+        if field == '0':
+            energy = load_energy_he(path=path, field=field)
+            for j in modes:
+                label = r'$e_{0' + str(j) + '}$'
+                pl.semilogy(energy[:, 0], energy[:, j], label=label)
+        else:
+            cenergy = load_energy_he(path=path, field='C'+field)
+            senergy = load_energy_he(path=path, field='S'+field)
+            for j in modes:
+                label = r'$e_{' + field + str(j) + '}$'
+                pl.semilogy(cenergy[:, 0], cenergy[:, 1]+senergy[:, 1],
+                            label=label)
+    pl.xlabel(r'$y$')
+    pl.ylabel(r'$e$')
     pl.legend(loc=0)
     # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
                # bbox_inches='tight')
