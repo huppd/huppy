@@ -5,7 +5,8 @@ import extractor as ex
 from plotting_constants import COLORS, MARKERC, LINES, LINEC
 
 
-def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
+def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
+                    save=False):
     """ plots residual ... over iterations """
     legend_yes = True
     if labels is None:
@@ -32,8 +33,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
                 ex.extract(file_str, ex.NOXIterPattern))+offset
             offset = iter_count[-1]
             res = ex.extract(file_str, ex.NOXResPattern)
-            print iter_count
-            print res
+            print(iter_count)
+            print(res)
             pl.figure(1)
             if ref == 0:
                 pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
@@ -51,7 +52,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            pl.savefig('F.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('F.pdf', bbox_inches='tight')
             pl.figure(2)
             if ref == 0:
                 pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
@@ -66,7 +68,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            pl.savefig('lam.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('lam.pdf', bbox_inches='tight')
             #
             pl.figure(3)
             if ref == 0:
@@ -83,10 +86,11 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
             pl.gca().yaxis.set_label_coords(0.0, 1.03)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
-            pl.savefig('du.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('du.pdf', bbox_inches='tight')
 
 
-def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
+def plot_linears(paths=None, filename='Picard', leg=None, refs=1, save=False):
     """ plots linear iteration and tolerance """
     if paths is None:
         paths = ['./']
@@ -96,7 +100,7 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
             file_str = pre_str + filename + str(ref) + '.txt'
             lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
             linatol = ex.extract(file_str, ex.BelosArTolPattern)
-            print linatol
+            print(linatol)
             pl.figure()
             if isinstance(lin_iter, float):  # wtf
                 lin_iter = [lin_iter]
@@ -109,7 +113,8 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
                 pl.MaxNLocator(integer=True))
             if leg is not None:
                 pl.legend(leg, loc=0)
-            pl.savefig('liniter.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('liniter.pdf', bbox_inches='tight')
             #
             pl.figure()
             pl.semilogy(pl.arange(1, len(linatol)+1) + offset, linatol,
@@ -123,11 +128,12 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
             if leg is not None:
                 # legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
                 pl.legend(leg, loc=0)
-            pl.savefig('lintol.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('lintol.pdf', bbox_inches='tight')
             offset += len(linatol)
 
 
-def plotNOX(paths=None, filename='output', run='', newton=False):
+def plotNOX(paths=None, filename='output', run='', newton=False, save=False):
     """ plots residual ... over iterations (deprecated) """
     if paths is None:
         paths = ['./']
@@ -136,8 +142,8 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         res = ex.extract(path+filename+str(run), ex.NOXResPattern)
         # dof = ex.extract(path+filename+str(run), ex.PimpDofPattern)[0][0]
         # print 'dof: ', dof
-        print iter_count
-        print res
+        print(iter_count)
+        print(res)
         pl.figure(1)
         # pl.semilogy(iter_count, res[:, 0]/pl.sqrt(dof))
         # pl.semilogy(res[:, 0]/pl.sqrt(dof), marker='.')
@@ -150,7 +156,8 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        # pl.savefig('F.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('F.pdf', bbox_inches='tight')
         pl.figure(2)
         pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.')
         if newton:
@@ -160,7 +167,8 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        # pl.savefig('lam.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('lam.pdf', bbox_inches='tight')
         #
         pl.figure(3)
         # pl.semilogy(iter_count[1:], res[1:, 2]/pl.sqrt(dof), marker='.')
@@ -172,17 +180,18 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        # pl.savefig('du.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('du.pdf', bbox_inches='tight')
 
 
-def plotNOX2(paths=['./'], leg=[], run='', newton=False):
+def plotNOX2(paths=['./'], leg=[], run='', newton=False, save=False):
     for path in paths:
         iter = ex.extract(path+'output'+str(run), ex.NOXIterPattern)
         res = ex.extract(path+'output'+str(run), ex.NOXResPattern)
         dof = ex.extract(path+'output'+str(run), ex.PimpDofPattern)
-        print 'dof: ', dof
-        #if isinstance(dof,float) :
-        #dof=[dof]
+        print('dof: ', dof)
+        # if isinstance(dof,float) :
+        # dof=[dof]
         #
         cumsum = 0
         iterres = [0]
@@ -197,7 +206,7 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         #
         if len(iterres) > 1:
             for j in range(max(len(iterres)-1, 1)):
-                #print iterres[j],iterres[j+1]
+                # print(iterres[j],iterres[j+1])
                 res[iterres[j]:iterres[j+1], [0, 2]] = \
                     res[iterres[j]:iterres[j+1], [0, 2]]/pl.sqrt(dof[j])
             res[iterres[j+1]:, [0, 2]] = res[iterres[j+1]:,
@@ -208,7 +217,7 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         ls = LINEC.next()
         m = MARKERC.next()
         pl.figure(1)
-        #pl.semilogy(iter[:],res[:,0], label=lab,ls=ls)
+        # pl.semilogy(iter[:],res[:,0], label=lab,ls=ls)
         pl.semilogy(iter, res[:, 0], ls=ls)
         if newton:
             pl.xlabel('Newton step')
@@ -217,13 +226,14 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-        #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        #xlim((0,9))
+        # legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # xlim((0,9))
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        pl.savefig('F.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('F.pdf', bbox_inches='tight')
         #
         pl.figure(2)
-        #semilogy(iter[:],res[:,1],basey=2, label=lab,ls=ls,marker=m)
+        # semilogy(iter[:],res[:,1],basey=2, label=lab,ls=ls,marker=m)
         pl.semilogy(iter[1:], res[1:, 1], basey=2, ls=ls, marker=m)
         if newton:
             pl.xlabel('Newton step')
@@ -231,12 +241,13 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Picard step')
         pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-        #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        pl.savefig('lam.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('lam.pdf', bbox_inches='tight')
         #
         pl.figure(3)
-        #semilogy(iter[:],res[:,2],label=lab,ls=ls ,marker=m)
+        # semilogy(iter[:],res[:,2],label=lab,ls=ls ,marker=m)
         pl.semilogy(iter[1:], res[1:, 2], ls=ls, marker=m)
         if newton:
             pl.xlabel('Newton step')
@@ -245,45 +256,46 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-        #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        pl.savefig('du.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('du.pdf', bbox_inches='tight')
         #
-        #figure(4)
-        ##if(len(iterBelos)==len(lin_iter)):
-            ##plot(iterBelos[:],lin_iter[:],label=lab,ls=ls)
-        ##elif(len(iterBelos)-1==len(lin_iter)):
-            ##plot(iterBelos[1:],lin_iter[:],marker=m, lw=0.5,label=lab,ls=ls)
-        ##else:
-        #if isinstance(lin_iter,float) :
-                #lin_iter=[lin_iter]
-        #plot(range(1,len(lin_iter)+1),lin_iter,marker=m,lw=0.5,ls=ls)
-        #xlabel('Newton iteration')
-        #ylabel(r'linear iterations')
-        ##legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        #gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
-        #savefig('liniter.pdf',bbox_inches='tight')
-        ##
-        #figure(5)
-        ##semilogy(iterBelos[1:],linatol[:],marker=m,lw=0.5,label=lab,ls=ls)
-        #semilogy(range(1,len(linatol)+1),linatol[:],marker=m,lw=0.5,ls=ls)
-        #xlabel('Newton iteration')
-        #ylabel(r'archieved tolerance of the linear solver')
-        ##legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        #gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
-        #savefig('lintol.pdf',bbox_inches='tight')
-        #i += 1
-    #show()
+        # figure(4)
+        # #if(len(iterBelos)==len(lin_iter)):
+            # #plot(iterBelos[:],lin_iter[:],label=lab,ls=ls)
+        # #elif(len(iterBelos)-1==len(lin_iter)):
+            # #plot(iterBelos[1:],lin_iter[:],marker=m, lw=0.5,label=lab,ls=ls)
+        # #else:
+        # if isinstance(lin_iter,float) :
+        # lin_iter=[lin_iter]
+        # plot(range(1,len(lin_iter)+1),lin_iter,marker=m,lw=0.5,ls=ls)
+        # xlabel('Newton iteration')
+        # ylabel(r'linear iterations')
+        # #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
+        # savefig('liniter.pdf',bbox_inches='tight')
+        # #
+        # figure(5)
+        # #semilogy(iterBelos[1:],linatol[:],marker=m,lw=0.5,label=lab,ls=ls)
+        # semilogy(range(1,len(linatol)+1),linatol[:],marker=m,lw=0.5,ls=ls)
+        # xlabel('Newton iteration')
+        # ylabel(r'archieved tolerance of the linear solver')
+        # #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # gca().get_xaxis().set_major_locator(MaxNLocator(integer=True))
+        # savefig('lintol.pdf',bbox_inches='tight')
+        # i += 1
+    # show()
 
 
-def plotBelos(files=None, leg=None):
+def plotBelos(files=None, leg=None, save=False):
     if files is None:
         files = ['./Picard.txt']
     i = 0
     for file_str in files:
         lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
         linatol = ex.extract(file_str, ex.BelosArTolPattern)
-        print linatol
+        print(linatol)
         pl.figure(4)
         if isinstance(lin_iter, float):  # wtf
             lin_iter = [lin_iter]
@@ -294,7 +306,8 @@ def plotBelos(files=None, leg=None):
         if leg is not None:
             pl.legend(leg, loc=0)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        pl.savefig('liniter.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('liniter.pdf', bbox_inches='tight')
         #
         pl.figure(5)
         pl.semilogy(range(1, len(linatol)+1), linatol, marker='.')
@@ -306,7 +319,8 @@ def plotBelos(files=None, leg=None):
         if leg is not None:
             pl.legend(leg, loc=0)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
-        pl.savefig('lintol.pdf', bbox_inches='tight')
+        if save:
+            pl.savefig('lintol.pdf', bbox_inches='tight')
         i += 1
 
 
@@ -321,13 +335,13 @@ def plotSpeedup(paths, nps, lab=None, runs=None):
         for run in runs:
             tempnew = ex.extract(path+'output'+str(run),
                                  ex.PimpSolveTimePattern, isarray=False)
-            print 'tempnew: ', tempnew
+            print('tempnew: ', tempnew)
             tempnew = tempnew
             temptime = min(temptime, tempnew)
         time.append(temptime)
     #
-    print 'nps: ', nps
-    print 'time: ', time
+    print('nps: ', nps)
+    print('time: ', time)
     if len(lab) == 0:
         pl.plot(nps, time[0]/pl.array(time), '.-', ms=5)
     else:
@@ -351,13 +365,13 @@ def plotStrongScaling(paths, nps, lab=None, runs=None):
         for run in runs:
             tempnew = ex.extract(path+'output'+str(run),
                                  ex.PimpSolveTimePattern, isarray=False)
-            print 'tempnew: ', tempnew
+            print('tempnew: ', tempnew)
             tempnew = tempnew
             temptime = min(temptime, tempnew)
         time.append(temptime)
     #
-    print 'nps: ', nps
-    print 'time: ', time
+    print('nps: ', nps)
+    print('time: ', time)
     if len(lab) == 0:
         pl.loglog(nps, time, '.-', ms=5, basex=2)
     else:
@@ -383,14 +397,14 @@ def plotWeakScaling(paths, nps, lab=None, runs=None):
         for run in runs:
             tempnew = ex.extract(path+'output'+str(run),
                                  ex.PimpSolveTimePattern, isarray=False)
-            print 'tempnew: ', tempnew
+            print('tempnew: ', tempnew)
             tempnew = tempnew
             temptime = min(temptime, tempnew)
-        #print temptime
+        #print(temptime)
         time.append(temptime)
     #
-    print 'nps: ', nps
-    print 'time: ', time
+    print('nps: ', nps)
+    print('time: ', time)
     if len(lab) == 0:
         pl.loglog(nps, time, '.-', ms=5, basex=2)
     else:
@@ -434,11 +448,11 @@ def plotEfficency(paths, nps, label='', runs=None,
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
-    print ''
-    print label
-    print 'nps: ', nps
-    print 'time: ', time
-    print 'fails: ', fails
+    print('')
+    print(label)
+    print('nps: ', nps)
+    print('time: ', time)
+    print('fails: ', fails)
     efficency = copy.deepcopy(nps)
     for i in range(len(time)):
         efficency[i] = time[0]/time[i]/nps[i]
@@ -455,13 +469,13 @@ def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
-    print ''
-    print label
-    print 'nps: ', nps
-    print 'time: ', time
-    print 'timeMean: ', timeMean
-    print 'timeSTD: ', timeSTD
-    print 'fails: ', fails
+    print('')
+    print(label)
+    print('nps: ', nps)
+    print('time: ', time)
+    print('timeMean: ', timeMean)
+    print('timeSTD: ', timeSTD)
+    print('fails: ', fails)
     # errorbar(log(nps), log(timeMean), log(timeSTD))
     # errorbar(log(nps), log(time), log(timeSTD))
     if len(color) == 0:

@@ -30,10 +30,8 @@ def plot_energy_dir(path='./', direc='Y', field='0', ref='0', iteration='0',
     """ plot energy profile """
     energy = load_energy_dir(path=path, direc=direc, field=field,
                              iteration=iteration, ref=ref)
-    # pl.semilogy(energy[:, 0], energy[:, 1]*pl.sqrt(2.), ls=ls, color=color, label=label)
     pl.semilogy(energy[:, 0], energy[:, 1], ls=ls, color=color, label=label)
     _plot_sugar(direc, energy[0, 0], energy[-1, 0])
-
 
 
 def plot_modeenergy_dir(path='./', direc='Y', field='1', ref='0',
@@ -49,7 +47,7 @@ def plot_modeenergy_dir(path='./', direc='Y', field='1', ref='0',
 
 
 def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
-                        iterations=None):
+                        iterations=None, save=False):
     """ plot multipletimes """
     if fields is None:
         fields = ['0']
@@ -68,34 +66,37 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                                     color=COLORS[i], ref=ref,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
-    # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-               # bbox_inches='tight')
+    # pl.ylim(ymin=10**-12)
+    if save:
+        pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+                   bbox_inches='tight')
 
 
-def he_energy(path='./', fields=None, modes=None):
+def he_energy(path='./', fields=None, modes=None, save=False):
     """ plot multipletimes """
     if fields is None:
         fields = ['0']
     if modes is None:
-        modes = [1, 3]
+        modes = [2, 4]
     for i, field in enumerate(fields):
         if field == '0':
             energy = load_energy_he(path=path, field=field)
             for j in modes:
-                label = r'$e_{0' + str(j) + '}$'
-                pl.semilogy(energy[:, 0], energy[:, j], label=label)
+                label = r'$e_{0' + str(j-1) + '}$'
+                pl.semilogy(energy[:-1, 0], energy[:-1, j]*4., label=label)
         else:
             cenergy = load_energy_he(path=path, field='C'+field)
             senergy = load_energy_he(path=path, field='S'+field)
             for j in modes:
-                label = r'$e_{' + field + str(j) + '}$'
-                pl.semilogy(cenergy[:, 0], cenergy[:, 1]+senergy[:, 1],
-                            label=label)
+                label = r'$e_{' + field + str(j-1) + '}$'
+                pl.semilogy(cenergy[:-1, 0],
+                            (cenergy[:-1, j]+senergy[:-1, j])*4., label=label)
     pl.xlabel(r'$y$')
     pl.ylabel(r'$e$')
     pl.legend(loc=0)
-    # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-               # bbox_inches='tight')
+    if save:
+        pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+                   bbox_inches='tight')
 
 
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
@@ -109,18 +110,19 @@ def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
         else:
             iters = int(ex.extract(path + 'nonlinear' + str(ref) + '.txt',
                                    ex.NOXIterPattern)[-1][0]) + 1
-        print iters
+        print(prefix)
+        print('iters:', iters)
         n_modes = 0
         bla = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(1)+'.txt')
         if bla.ndim == 1:
             n_modes = 1
         else:
             n_modes = bla.shape[0]
-        print n_modes
-        print bla
+        print('#modes:', n_modes)
+        print(bla)
         norms = pl.zeros([iters, n_modes])
         for i in range(1, iters):
-            print pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
+            print(pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt'))
             if n_modes == 1:
                 norms[i, :] = \
                     pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')[-1]
@@ -131,9 +133,10 @@ def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
             pl.semilogy(pl.arange(iters)+offset, norms[:, j], color=color,
                         ls=ls, marker=MARKERS[j])
         offset += iters - 1
+    print()
 
 
-def plot_vs(path='./', refs=1):
+def plot_vs(path='./', refs=1, save=False):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
@@ -146,7 +149,8 @@ def plot_vs(path='./', refs=1):
         elif prefix == 'res':
             pl.ylabel(r'$\|\mathbf{r}\|$', ha='left', va='bottom', rotation=0)
         elif prefix == 'cor':
-            pl.ylabel(r'$\|\delta \mathbf{q}\|$', ha='left', va='bottom', rotation=0)
+            pl.ylabel(r'$\|\delta \mathbf{q}\|$', ha='left', va='bottom',
+                      rotation=0)
         pl.gca().yaxis.set_label_coords(-0.08, 1.02)
         pl.xlabel(r'iteration step')
         pl.gca().get_xaxis().set_major_locator(
@@ -154,7 +158,8 @@ def plot_vs(path='./', refs=1):
         for i, field in enumerate(fields):
             digdeep(path=path, prefix=prefix+field, refs=refs, color=COLORS[i],
                     ls=LINES[i])
-        pl.savefig(prefix + '.pdf')
+        if save:
+            pl.savefig(prefix + '.pdf')
 
 
 def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv', ls='-'):
@@ -170,9 +175,9 @@ def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv', ls='-'):
         pl.MaxNLocator(integer=True))
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
-        print spec
+        print(spec)
         pl.semilogy(spec[:, 0], spec[:, 1], marker='.', ls=ls)
 
 
 if __name__ == "__main__":
-    print 'main'
+    print('main')
