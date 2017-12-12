@@ -26,23 +26,24 @@ def load_energy_he(path='./', field='0'):
 
 
 def plot_energy_dir(path='./', direc='Y', field='0', ref='0', iteration='0',
-                    ls='-', color='b', label=''):
+                    linestyle='-', color='b', label=''):
     """ plot energy profile """
     energy = load_energy_dir(path=path, direc=direc, field=field,
                              iteration=iteration, ref=ref)
-    pl.semilogy(energy[:, 0], energy[:, 1], ls=ls, color=color, label=label)
+    pl.semilogy(energy[:, 0], energy[:, 1], linestyle=linestyle, color=color,
+                label=label)
     _plot_sugar(direc, energy[0, 0], energy[-1, 0])
 
 
 def plot_modeenergy_dir(path='./', direc='Y', field='1', ref='0',
-                        iteration='0', ls='-', color='b', label=''):
+                        iteration='0', linestyle='-', color='b', label=''):
     """ plot energy profile """
     cenergy = load_energy_dir(path=path, direc=direc, field='C'+field,
                               iteration=iteration, ref=ref)
     senergy = load_energy_dir(path=path, direc=direc, field='S'+field,
                               iteration=iteration, ref=ref)
-    pl.semilogy(cenergy[:, 0], cenergy[:, 1]+senergy[:, 1], ls=ls, color=color,
-                label=label)
+    pl.semilogy(cenergy[:, 0], cenergy[:, 1]+senergy[:, 1],
+                linestyle=linestyle, color=color, label=label)
     _plot_sugar(direc, cenergy[0, 0], cenergy[-1, 0])
 
 
@@ -57,12 +58,12 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
         for j, iteration in enumerate(iterations):
             if field == '0':
                 plot_energy_dir(path=path, direc=direc, field=field,
-                                iteration=iteration, ls=LINES[j],
+                                iteration=iteration, linestyle=LINES[j],
                                 color=COLORS[i], ref=ref,
                                 label=r'$u_'+field+'^{('+iteration+')}$')
             else:
                 plot_modeenergy_dir(path=path, direc=direc, field=field,
-                                    iteration=iteration, ls=LINES[j],
+                                    iteration=iteration, linestyle=LINES[j],
                                     color=COLORS[i], ref=ref,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
@@ -99,7 +100,8 @@ def he_energy(path='./', fields=None, modes=None, save=False):
                    bbox_inches='tight')
 
 
-def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
+def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0],
+            linestyle=LINES[0]):
     """ analyze deep """
     offset = 0
     for ref in range(max(refs, 1)):
@@ -130,8 +132,8 @@ def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
                 norms[i, :] = pl.loadtxt(
                     path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')[:, -1]
         for j in range(n_modes):
-            pl.semilogy(pl.arange(iters)+offset, norms[:, j], color=color,
-                        ls=ls, marker=MARKERS[j])
+            pl.semilogy(pl.arange(1, iters)+offset, norms[1:, j], color=color,
+                        linestyle=linestyle, marker=MARKERS[j])
         offset += iters - 1
     print()
 
@@ -157,12 +159,13 @@ def plot_vs(path='./', refs=1, save=False):
             pl.MaxNLocator(integer=True))
         for i, field in enumerate(fields):
             digdeep(path=path, prefix=prefix+field, refs=refs, color=COLORS[i],
-                    ls=LINES[i])
+                    linestyle=LINES[i])
         if save:
             pl.savefig(prefix + '.pdf')
 
 
-def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv', ls='-'):
+def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv',
+                          linestyle='-'):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
@@ -176,7 +179,7 @@ def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv', ls='-'):
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
         print(spec)
-        pl.semilogy(spec[:, 0], spec[:, 1], marker='.', ls=ls)
+        pl.semilogy(spec[:, 0], spec[:, 1], marker='.', linestyle=linestyle)
 
 
 if __name__ == "__main__":
