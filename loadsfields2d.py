@@ -90,11 +90,11 @@ def lodnplots_streamfunc(di='.', num=0, nf=1, save=False):
             if save:
                 pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
-            pl.title(r'$\hat{\mathbf{u}}^s_{'+str((m+1)/2)+'}$')
+            pl.title(r'$\hat{\mathbf{u}}^s_{'+str(int((m+1)/2))+'}$')
             if save:
                 pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
         else:
-            pl.title(r'$\hat{\mathbf{u}}^c_{'+str((m+1)/2)+'}$')
+            pl.title(r'$\hat{\mathbf{u}}^c_{'+str(int((m+1)/2))+'}$')
             if save:
                 pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
 

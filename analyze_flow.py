@@ -67,7 +67,6 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                                     color=COLORS[i], ref=ref,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
-    # pl.ylim(ymin=10**-12)
     if save:
         pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
                    bbox_inches='tight')
@@ -92,6 +91,10 @@ def he_energy(path='./', fields=None, modes=None, save=False):
                 label = r'$e_{' + field + str(j-1) + '}$'
                 pl.semilogy(cenergy[:-1, 0],
                             (cenergy[:-1, j]+senergy[:-1, j])*4., label=label)
+    pl.ylim(ymin=10.**-8)
+    pl.ylim(ymax=1.)
+    pl.xlim(xmin=0)
+    pl.xlim(xmax=600.)
     pl.xlabel(r'$y$')
     pl.ylabel(r'$e$')
     pl.legend(loc=0)

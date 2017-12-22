@@ -5,7 +5,7 @@ import extractor as ex
 from plotting_constants import COLORS, MARKERC, LINES, LINEC
 
 
-def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
+def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
                     save=False):
     """ plots residual ... over iterations """
     legend_yes = True
@@ -15,19 +15,18 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
     if paths is None:
         paths = ['./']
         labels = paths
+        if len(paths) == 1:
+            LINES[0] = '-'
         legend_yes = False
     if refs == 0:
-        refs = 1
-        no_ref = True
+        ref_strs = ['']
     else:
-        no_ref = False
+        ref_strs = []
+        for ref in range(refs):
+            ref_strs.append(str(ref))
     for i, path in enumerate(paths):
         offset = 0
-        for ref in range(refs):
-            if no_ref:
-                ref_str = ''
-            else:
-                ref_str = str(ref)
+        for ref_str in ref_strs:
             file_str = path+filename+ref_str+'.txt'
             iter_count = pl.array(
                 ex.extract(file_str, ex.NOXIterPattern))+offset
@@ -36,14 +35,10 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
             print(iter_count)
             print(res)
             pl.figure(1)
-            if ref == 0:
-                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
-                            linestyle=LINES[i], label=labels[i])
-                if legend_yes:
-                    pl.legend(loc=0)
-            else:
-                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
-                            linestyle=LINES[i])
+            pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                        linestyle=LINES[i], label=labels[i])
+            if legend_yes:
+                pl.legend(loc=0)
             pl.xlabel('Picard step')
             pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
@@ -55,15 +50,11 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
             if save:
                 pl.savefig('F.pdf', bbox_inches='tight')
             pl.figure(2)
-            if ref == 0:
-                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
-                            color=COLORS[i], linestyle=LINES[i],
-                            label=labels[i])
-                if legend_yes:
-                    pl.legend(loc=0)
-            else:
-                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
-                            color=COLORS[i], linestyle=LINES[i])
+            pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                        color=COLORS[i], linestyle=LINES[i],
+                        label=labels[i])
+            if legend_yes:
+                pl.legend(loc=0)
             pl.xlabel('Picard step')
             pl.ylabel(r'step width', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
@@ -73,15 +64,11 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None,
                 pl.savefig('lam.pdf', bbox_inches='tight')
             #
             pl.figure(3)
-            if ref == 0:
-                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
-                            color=COLORS[i], linestyle=LINES[i],
-                            label=labels[i])
-                if legend_yes:
-                    pl.legend(loc=0)
-            else:
-                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
-                            color=COLORS[i], linestyle=LINES[i])
+            pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                        color=COLORS[i], linestyle=LINES[i],
+                        label=labels[i])
+            if legend_yes:
+                pl.legend(loc=0)
             pl.xlabel('Picard step')
             pl.ylabel(r'$||\delta\mathbf{q}||$', ha='right', va='bottom',
                       rotation=0)
@@ -249,7 +236,8 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False, save=False):
     # show()
 
 
-def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1):
+def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1,
+                offset=0, linestyle='-'):
     """ plots the linear iteration and achieved tolerance """
     lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
     linatol = ex.extract(file_str, ex.BelosArTolPattern)
@@ -257,7 +245,8 @@ def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1):
     pl.figure(fig)
     if isinstance(lin_iter, float):  # wtf
         lin_iter = [lin_iter]
-    pl.plot(range(1, len(lin_iter)+1), lin_iter, marker='.', label=label)
+    pl.plot(pl.arange(1, len(lin_iter)+1)+offset, lin_iter, marker='.',
+            label=label, linestyle=linestyle)
     pl.xlabel('Picard step')
     pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
@@ -266,63 +255,94 @@ def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1):
         pl.savefig('liniter.pdf', bbox_inches='tight')
     #
     pl.figure(fig+1)
-    pl.semilogy(range(1, len(linatol)+1), linatol, marker='.', label=label)
+    pl.semilogy(pl.arange(1, len(linatol)+1)+offset, linatol, marker='.',
+                label=label, linestyle=linestyle)
     pl.xlabel('Picard step')
-    pl.ylabel(r'achieved tolerance of the linear solver', ha='left',
-              va='bottom', rotation=0)
-    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+    # pl.ylabel(r'achieved tolerance of the linear solver', ha='left',
+              # va='bottom', rotation=0)
+    # pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+    pl.ylabel(r'achieved tolerance of the linear solver')
     pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
     if save:
         pl.savefig('lintol.pdf', bbox_inches='tight')
+    offset += len(linatol)
+    return offset
 
 
-def plot_linears(paths=None, filename='Picard', leg=None, refs=0, save=False):
+def plot_linears(path='./', filenames=None, leg=None, refs=0, save=False):
     """ plots linear iteration and tolerance """
-    if paths is None:
-        paths = ['./']
+    if filenames is None:
+        filenames = [r'Picard', r'ConvectionDiffusionVOp',
+                     r'ModeNonlinearOp_ConvectionDiffusionVOp', r'DivGrad']
     if refs == 0:
         refs_str = ['']
     else:
         refs_str = []
         for i in range(refs):
             refs_str.append(str(i))
-    for i, pre_str in enumerate(paths):
+    for i, file_pre in enumerate(filenames):
         offset = 0
         for ref in refs_str:
-            file_str = pre_str + filename + ref + '.txt'
-            lin_iter = ex.extract(file_str, ex.BelosMaxItPattern)
-            linatol = ex.extract(file_str, ex.BelosArTolPattern)
-            print(linatol)
-            pl.figure()
-            if isinstance(lin_iter, float):  # wtf
-                lin_iter = [lin_iter]
-            pl.plot(pl.arange(1, len(lin_iter)+1) + offset, lin_iter,
-                    marker='.', color=COLORS[i], linestyle=LINES[i])
-            pl.xlabel('Picard step')
-            pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
-            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-            pl.gca().get_xaxis().set_major_locator(
-                pl.MaxNLocator(integer=True))
-            if leg is not None:
-                pl.legend(leg, loc=0)
+            file_str = path + file_pre + ref + '.txt'
+            if file_pre == r'Picard':
+                linestyle = '-'
+            else:
+                linestyle = ''
+            offset = plot_linear(file_str=file_str, fig=2*i, offset=offset,
+                                 linestyle=linestyle, save=False)
+            pl.figure(2*i)
+            if file_pre == r'Picard':
+                pl.title('Picard problem')
+                pl.xlabel('Picard step')
+            elif file_pre == r'ConvectionDiffusionVOp':
+                pl.title(r'Convection-diffusion problem')
+                pl.xlabel('')
+            elif file_pre == r'ModeNonlinearOp_ConvectionDiffusionVOp':
+                pl.title(r'Harmonic convection-diffusion problem')
+                pl.xlabel('')
+            elif file_pre == r'DivGrad':
+                pl.title(r'Poisson problem')
+                pl.xlabel('')
+            pl.figure(2*i+1)
+            if file_pre == r'Picard':
+                pl.title('Picard problem')
+                pl.xlabel('Picard step')
+            elif file_pre == r'ConvectionDiffusionVOp':
+                pl.title(r'Convection-diffusion problem')
+                pl.xlabel('')
+            elif file_pre == r'ModeNonlinearOp_ConvectionDiffusionVOp':
+                pl.title(r'Harmonic convection-diffusion problem')
+                pl.xlabel('')
+            elif file_pre == r'DivGrad':
+                pl.title(r'Poisson problem')
+                pl.xlabel('')
             if save:
-                pl.savefig('liniter.pdf', bbox_inches='tight')
-            #
-            pl.figure()
-            pl.semilogy(pl.arange(1, len(linatol)+1) + offset, linatol,
-                        marker='.', color=COLORS[i], linestyle=LINES[i])
-            pl.xlabel('Picard step')
-            pl.ylabel(r'archieved tolerance of the linear solver', ha='left',
-                      va='bottom', rotation=0)
-            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-            pl.gca().get_xaxis().set_major_locator(
-                pl.MaxNLocator(integer=True))
-            if leg is not None:
-                # legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-                pl.legend(leg, loc=0)
-            if save:
-                pl.savefig('lintol.pdf', bbox_inches='tight')
-            offset += len(linatol)
+                pl.figure(2*i)
+                pl.savefig(file_pre+'_liniter.pdf', bbox_inches='tight')
+                pl.figure(2*i+1)
+                pl.savefig(file_pre+'_lintol.pdf', bbox_inches='tight')
+
+
+def plot_nonlinear_refinement(path='./', save=False):
+    """ plots residual refinement ... over iterations """
+    file_str = path+'refinementTest.txt'
+    res = pl.loadtxt(file_str)
+    print(res)
+    pl.figure(1)
+    pl.semilogy(res[:, 0], marker='.', color=COLORS[0],
+                linestyle=LINES[0])
+    pl.semilogy(res[:, 1], marker='.', color=COLORS[1],
+                linestyle=LINES[1])
+    pl.xlabel('Picard step')
+    pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
+    pl.gca().yaxis.set_label_coords(0.0, 1.02)
+    pl.gca().get_xaxis().set_major_locator(
+        pl.MaxNLocator(integer=True))
+    # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
+    pl.gca().get_xaxis().set_major_locator(
+        pl.MaxNLocator(integer=True))
+    if save:
+        pl.savefig('refF.pdf', bbox_inches='tight')
 
 
 def polt_speedup(paths, nps, lab=None, runs=None):
