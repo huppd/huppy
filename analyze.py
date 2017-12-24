@@ -18,7 +18,7 @@ def analyze(ref=''):
         print(fil, ' (', count, ')')
         if count != 0:
             print('total: ', sum(stats[:, 0]))
-            print('iter: ', np.mean(stats[:, 0]), '+- ', np.std(stats[:, 0]))
+            print('iter: ', np.median(stats[:, 0]), '+- ', np.std(stats[:, 0]))
             print('max: ', np.max(stats[:, 0]))
             print('tol: ', np.mean(stats[:, 1]), '+- ', np.std(stats[:, 1]))
         print()

@@ -251,6 +251,7 @@ def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1,
     pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
     pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
+    pl.gca().get_yaxis().set_major_locator(pl.MaxNLocator(integer=True))
     if save:
         pl.savefig('liniter.pdf', bbox_inches='tight')
     #
