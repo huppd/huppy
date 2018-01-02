@@ -324,15 +324,15 @@ def plot_linears(path='./', filenames=None, leg=None, refs=0, save=False):
                 pl.savefig(file_pre+'_lintol.pdf', bbox_inches='tight')
 
 
-def plot_nonlinear_refinement(path='./', save=False):
+def plot_refinement(path='./', save=False):
     """ plots residual refinement ... over iterations """
     file_str = path+'refinementTest.txt'
     res = pl.loadtxt(file_str)
     print(res)
     pl.figure(1)
-    pl.semilogy(res[:, 0], marker='.', color=COLORS[0],
+    pl.semilogy(res[:, 0], res[:, -2], marker='.', color=COLORS[0],
                 linestyle=LINES[0])
-    pl.semilogy(res[:, 1], marker='.', color=COLORS[1],
+    pl.semilogy(res[:, 0], res[:, -1], marker='.', color=COLORS[1],
                 linestyle=LINES[1])
     pl.xlabel('Picard step')
     pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
