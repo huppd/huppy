@@ -45,7 +45,7 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
-            pl.gca().get_xaxis().set_major_locator(
+            pl.gca().get_yaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             if save:
                 pl.savefig('F.pdf', bbox_inches='tight')
