@@ -84,7 +84,7 @@ def he_energy(path='./', fields=None, modes=None, save=False):
             for j in modes:
                 label = r'$e_{0' + str(j-1) + '}$'
                 pl.semilogy(energy[:-1, 0], (energy[:-1,
-                    j])/4., label=label)
+                    j])/pl.pi, label=label)
         else:
             cenergy = load_energy_he(path=path, field='C'+field)
             senergy = load_energy_he(path=path, field='S'+field)
@@ -92,7 +92,7 @@ def he_energy(path='./', fields=None, modes=None, save=False):
                 label = r'$e_{' + field + str(j-1) + '}$'
                 pl.semilogy(cenergy[:-1, 0],
                             (cenergy[:-1, j]+senergy[:-1,
-                                j])/4., label=label)
+                                j])/pl.pi, label=label)
     pl.ylim(ymin=10.**-8)
     pl.ylim(ymax=1.)
     pl.xlim(xmin=0)
