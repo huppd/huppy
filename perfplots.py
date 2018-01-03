@@ -330,7 +330,7 @@ def plot_refinement(path='./', save=False):
     res = pl.loadtxt(file_str)
     print(res)
     pl.figure(1)
-    pl.semilogy(res[:, 0], res[:, -2], marker='.', color=COLORS[0],
+    pl.semilogy(res[:, 0], res[:, -2]/res[:, 1], marker='.', color=COLORS[0],
                 linestyle=LINES[0])
     pl.semilogy(res[:, 0], res[:, -1], marker='.', color=COLORS[1],
                 linestyle=LINES[1])
