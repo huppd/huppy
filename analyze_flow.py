@@ -102,7 +102,7 @@ def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-'):
     pl.legend(loc=0)
     if save:
         pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-                   bbox_inches='tight', transparent=True)
+                   bbox_inches='tight')
 
 
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0],
