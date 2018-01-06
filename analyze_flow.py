@@ -9,7 +9,12 @@ def _plot_sugar(direc, emin, emax):
     pl.xlim(xmin=emin)
     pl.xlim(xmax=emax)
     pl.xlabel(r'$'+direc.lower()+'$')
+<<<<<<< HEAD
     pl.ylabel('energy')
+=======
+    pl.ylabel('energy', ha='left', va='bottom', rotation=0)
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def load_energy_dir(path='./', direc='Y', refine='0', field='0',
@@ -60,8 +65,13 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, refine='0',
                                     color=COLORS[i], refine=refine,
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
+<<<<<<< HEAD
     pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
                bbox_inches='tight')
+=======
+    # pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
+               # bbox_inches='tight')
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0], ls=LINES[0]):
@@ -103,17 +113,48 @@ def plot_vs(path='./', refs=1):
     for prefix in prefixes:
         pl.figure()
         if prefix == 'x':
+<<<<<<< HEAD
             pl.ylabel(r'$\|\mathbf{q}\|$')
         elif prefix == 'res':
             pl.ylabel(r'$\|\mathbf{r}\|$')
         elif prefix == 'cor':
             pl.ylabel(r'$\|\delta \mathbf{q}\|$')
+=======
+            pl.ylabel(r'$\|\mathbf{q}\|$', ha='left', va='bottom', rotation=0)
+        elif prefix == 'res':
+            pl.ylabel(r'$\|\mathbf{r}\|$', ha='left', va='bottom', rotation=0)
+        elif prefix == 'cor':
+            pl.ylabel(r'$\|\delta \mathbf{q}\|$', ha='left', va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         pl.xlabel(r'iteration step')
         pl.gca().get_xaxis().set_major_locator(
             pl.MaxNLocator(integer=True))
         for i, field in enumerate(fields):
             digdeep(path=path, prefix=prefix+field, refs=refs, color=COLORS[i],
                     ls=LINES[i])
+<<<<<<< HEAD
+=======
+        pl.savefig(prefix + '.pdf')
+
+
+def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv'):
+    """ plots development of each norm over Picards iteration, corresponds to
+    NOXPrePostSpecturm
+    """
+    if iters is None:
+        iters = [0]
+    
+    pl.ylabel(r'$\|\mathbf{e}\|$', ha='left', va='bottom', rotation=0)
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+    pl.xlabel(r'mode')
+    pl.gca().get_xaxis().set_major_locator(
+        pl.MaxNLocator(integer=True))
+    for i in iters:
+        spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
+        print spec
+        pl.semilogy(spec[:, 0], spec[:, 1], marker='.')
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 if __name__ == "__main__":

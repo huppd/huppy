@@ -8,23 +8,23 @@ import numpy
 INF = 1e9999
 
 # helper string
-float_str = r"[\-]{0,1}\d+.{0,1}\d+e{0,1}[-+]{0,1}\d*"
+FLOAT_STR = r"[\-]{0,1}\d+.{0,1}\d+e{0,1}[-+]{0,1}\d*"
 int_str = r"\d+"
 
 # lin solver
 BelosIterPattern = re.compile(
-    r"Iter[ ]+(" + int_str + r"), \[ +" + int_str + r"\] :    (" + float_str +
+    r"Iter[ ]+(" + int_str + r"), \[ +" + int_str + r"\] :    (" + FLOAT_STR +
     r")")
 BelosMaxItPattern = re.compile(
     r"\s+[OK,Failed]+[.]+Number of Iterations = (" + int_str + r") [<=]+ " +
     int_str)
 BelosArTolPattern = re.compile(
-    r"\s+residual \[ " + int_str + r" \] = (" + float_str + r") [<>] ")
+    r"\s+residual \[ " + int_str + r" \] = (" + FLOAT_STR + r") [<>] ")
 
 # nonlin solver
 NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (" + int_str + r") -- ")
 NOXResPattern = re.compile(
-    r"\|\|F\|\| = (" + float_str + r")  step = " + r"(" + float_str +
+    r"\|\|F\|\| = (" + FLOAT_STR + r")  step = " + r"(" + FLOAT_STR +
     r")  dx = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
 
 PimpOmPattern = re.compile(r" \tomega=(\d+.{0,1}\d*)")
@@ -43,39 +43,39 @@ PimpSolveTime = re.compile(
     r"(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*" +
     r"e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXCompFTime = re.compile(
-    r"NOX: compute F\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
-    float_str + r") \((" + int_str + r")\)\s+(" + float_str + r") \((" +
-    int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
+    r"NOX: compute F\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
+    FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" +
+    int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
 NOXSolveDXTime = re.compile(
-    r"NOX: solve dx\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
-    float_str + r") \((" + int_str + r")\)\s+(" + float_str + r") \((" +
-    int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
+    r"NOX: solve dx\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
+    FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" +
+    int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
 NOXUpdateXTime = re.compile(
-    r"NOX: update X\s+(" + float_str + r") \((" + int_str + r")\)\s+(" +
-    float_str + r" ) \((" + float_str + r") \((" + int_str + r")\)\s+(" +
-    float_str + r") \((" + int_str + r")\)")
+    r"NOX: update X\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
+    FLOAT_STR + r" ) \((" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
+    FLOAT_STR + r") \((" + int_str + r")\)")
 BelosTotTime = re.compile(
     r"Compound\( MHDtConvectionDiffusion\, MH_Grad\, MH_Div \): " +
-    r"BlockGmresSolMgr total solve time\s+(" + float_str + r") \((" + int_str +
-    r")\)\s+(" + float_str + r") \((" + int_str + r")\)\s+(" + float_str +
-    r") \((" + int_str + r")\)\s+(" + float_str + r") \((" + int_str + r")\)")
+    r"BlockGmresSolMgr total solve time\s+(" + FLOAT_STR + r") \((" + int_str +
+    r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR +
+    r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
 FTime = re.compile(
     r"MHDtConvectionDiffusion: BlockGmresSolMgr total solve time\s+" +
-    float_str + r" \(" + int_str + r"\)\s+" + float_str + r" \(" + int_str +
-    r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+(" + float_str + r") \(("
+    FLOAT_STR + r" \(" + int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str +
+    r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \(("
     + int_str + r")\)")
 DivGradTime = re.compile(
-    r"DivGrad: BlockGmresSolMgr total solve time\s+" + float_str + r" \(" +
-    int_str + r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+" + float_str +
-    r" \(" + int_str + r"\)\s+(" + float_str + r") \((" + int_str + r")\)")
+    r"DivGrad: BlockGmresSolMgr total solve time\s+" + FLOAT_STR + r" \(" +
+    int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+" + FLOAT_STR +
+    r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
 FZTime = re.compile(
-    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+" + float_str
-    + r" \(" + int_str + r"\)\s+" + float_str + r" \(" + int_str + r"\)\s+" +
-    float_str + r" \(" + int_str + r"\)\s+(" + float_str + r") \((" + int_str +
+    r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+" + FLOAT_STR
+    + r" \(" + int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+" +
+    FLOAT_STR + r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \((" + int_str +
     r")\)")
 
 
-def extract(datafile, pattern, outfile='', isfloat=True, isarray=True):
+def extract(datafile, pattern, isfloat=True, isarray=True, outfile=''):
     """ extractor function """
     m = pattern.groups
     try:

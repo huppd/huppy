@@ -6,7 +6,12 @@ import extractor as ex
 def analyze(step=''):
     """ analyze """
     #
+<<<<<<< HEAD
     files = ['Picard'+step+'.txt', 'MHDtConvectionDiffusion'+step+'.txt',
+=======
+    files = ['Picard'+step+'.txt',
+             'MHDtConvectionDiffusion'+step+'.txt',
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
              'DivGrad'+step+'.txt',
              'ModeNonlinearOp_ConvectionDiffusionVOp'+step+'.txt',
              'ConvectionDiffusionVOp'+step+'.txt']

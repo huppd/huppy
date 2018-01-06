@@ -5,6 +5,7 @@ import extractor as ex
 from plotting_constants import COLORS, MARKERC, LINES, LINEC
 
 
+<<<<<<< HEAD
 def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
     """ plots residual ... over iterations """
     if paths is None:
@@ -13,6 +14,31 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
         offset = 0
         for ref in range(refs):
             file_str = path+filename+str(ref)+'.txt'
+=======
+def plot_nonlinears(paths=None, filename='nonlinear', refs=1, labels=None):
+    """ plots residual ... over iterations """
+    legend_yes = True
+    if labels is None:
+        labels = paths
+        legend_yes = False
+    if paths is None:
+        paths = ['./']
+        labels = paths
+        legend_yes = False
+    if refs == 0:
+        refs = 1
+        no_ref = True
+    else:
+        no_ref = False
+    for i, path in enumerate(paths):
+        offset = 0
+        for ref in range(refs):
+            if no_ref:
+                ref_str = ''
+            else:
+                ref_str = str(ref)
+            file_str = path+filename+ref_str+'.txt'
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             iter_count = pl.array(
                 ex.extract(file_str, ex.NOXIterPattern))+offset
             offset = iter_count[-1]
@@ -20,15 +46,30 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
             print iter_count
             print res
             pl.figure(1)
+<<<<<<< HEAD
             pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                         ls=LINES[i])
             pl.xlabel('Picard iteration')
             pl.ylabel(r'$\|\mathbf{r}\|$')
+=======
+            if ref == 0:
+                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                            ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
+                            ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
+<<<<<<< HEAD
             # pl.savefig('F.pdf', bbox_inches='tight')
             pl.figure(2)
             pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
@@ -47,6 +88,41 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=1):
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             # pl.savefig('du.pdf', bbox_inches='tight')
+=======
+            pl.savefig('F.pdf', bbox_inches='tight')
+            pl.figure(2)
+            if ref == 0:
+                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                            color=COLORS[i], ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
+                            color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'step width', ha='right', va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.02)
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            pl.savefig('lam.pdf', bbox_inches='tight')
+            #
+            pl.figure(3)
+            if ref == 0:
+                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                            color=COLORS[i], ls=LINES[i], label=labels[i])
+                if legend_yes:
+                    pl.legend(loc=0)
+            else:
+                pl.semilogy(iter_count[1:], res[1:, 2], marker='.',
+                            color=COLORS[i], ls=LINES[i])
+            pl.xlabel('Picard iteration')
+            pl.ylabel(r'$||\delta\mathbf{q}||$', ha='right', va='bottom',
+                      rotation=0)
+            pl.gca().yaxis.set_label_coords(0.0, 1.03)
+            pl.gca().get_xaxis().set_major_locator(
+                pl.MaxNLocator(integer=True))
+            pl.savefig('du.pdf', bbox_inches='tight')
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
@@ -66,7 +142,12 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
             pl.plot(pl.arange(1, len(lin_iter)+1) + offset, lin_iter,
                     marker='.', color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
             pl.ylabel(r'linear iterations')
+=======
+            pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             if leg is not None:
@@ -77,7 +158,13 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
             pl.semilogy(pl.arange(1, len(linatol)+1) + offset, linatol,
                         marker='.', color=COLORS[i], ls=LINES[i])
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
             pl.ylabel(r'archieved tolerance of the linear solver')
+=======
+            pl.ylabel(r'archieved tolerance of the linear solver', ha='left',
+                      va='bottom', rotation=0)
+            pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             if leg is not None:
@@ -106,8 +193,14 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$')
         # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
+=======
+        pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
+                  rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         # pl.savefig('F.pdf', bbox_inches='tight')
         pl.figure(2)
@@ -116,7 +209,12 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'step width')
+=======
+        pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         # pl.savefig('lam.pdf', bbox_inches='tight')
         #
@@ -128,6 +226,10 @@ def plotNOX(paths=None, filename='output', run='', newton=False):
         else:
             pl.xlabel('Picard iteration')
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
+<<<<<<< HEAD
+=======
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         # pl.savefig('du.pdf', bbox_inches='tight')
 
@@ -173,7 +275,11 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Picard iteration')
         pl.ylabel(r'$||\mathbf{r}||_2/\sqrt{N}$', ha='left', va='bottom',
                   rotation=0)
+<<<<<<< HEAD
         pl.gca().yaxis.set_label_coords(-0.09, 1.075)
+=======
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         #xlim((0,9))
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
@@ -186,7 +292,12 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'step width')
+=======
+        pl.ylabel(r'step width', ha='left', va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         pl.savefig('lam.pdf', bbox_inches='tight')
@@ -198,7 +309,13 @@ def plotNOX2(paths=['./'], leg=[], run='', newton=False):
             pl.xlabel('Newton iteration')
         else:
             pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$')
+=======
+        pl.ylabel(r'$||\delta\mathbf{q}||_2/\sqrt{N}$', ha='left', va='bottom',
+                  rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
         pl.savefig('du.pdf', bbox_inches='tight')
@@ -243,7 +360,12 @@ def plotBelos(files=None, leg=None):
             lin_iter = [lin_iter]
         pl.plot(range(1, len(lin_iter)+1), lin_iter, marker='.')
         pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'linear iterations')
+=======
+        pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         if leg is not None:
             pl.legend(leg, loc=0)
         pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
@@ -252,7 +374,13 @@ def plotBelos(files=None, leg=None):
         pl.figure(5)
         pl.semilogy(range(1, len(linatol)+1), linatol, marker='.')
         pl.xlabel('Picard iteration')
+<<<<<<< HEAD
         pl.ylabel(r'archieved tolerance of the linear solver')
+=======
+        pl.ylabel(r'archieved tolerance of the linear solver', ha='left',
+                  va='bottom', rotation=0)
+        pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         # legend(leg,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         if leg is not None:
             pl.legend(leg, loc=0)
@@ -288,7 +416,11 @@ def plotSpeedup(paths, nps, lab=None, runs=None):
     pl.gca().xaxis.set_ticks(nps)
     pl.xlabel('number of cores')
     pl.ylabel('speed-up', ha='left', va='bottom', rotation=0)
+<<<<<<< HEAD
     pl.gca().yaxis.set_label_coords(-0.05, 1.075)
+=======
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def plotStrongScaling(paths, nps, lab=None, runs=None):
@@ -320,7 +452,11 @@ def plotStrongScaling(paths, nps, lab=None, runs=None):
     pl.gca().xaxis.set_ticks(nps)
     pl.xlabel('number of cores')
     pl.ylabel('time[s]', ha='left', va='bottom', rotation=0)
+<<<<<<< HEAD
     pl.gca().yaxis.set_label_coords(-0.05, 1.075)
+=======
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def plotWeakScaling(paths, nps, lab=None, runs=None):
@@ -351,7 +487,11 @@ def plotWeakScaling(paths, nps, lab=None, runs=None):
     pl.gca().xaxis.set_ticks(nps)
     pl.xlabel('number of cores')
     pl.ylabel('time[s]', ha='left', va='bottom', rotation=0)
+<<<<<<< HEAD
     pl.gca().yaxis.set_label_coords(-0.05, 1.075)
+=======
+    pl.gca().yaxis.set_label_coords(-0.08, 1.02)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
 
 
 def getTimes(paths, runs, pattern):
@@ -381,7 +521,11 @@ def getTimes(paths, runs, pattern):
 
 def plotEfficency(paths, nps, label='', runs=None,
                   pattern=ex.PimpSolveTimePattern, scale=1, basex=10, basey=10,
+<<<<<<< HEAD
                   marker='', linestyle='-', color='b', ms=3):
+=======
+                  marker='', linestyle='-', color='b'):
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
@@ -394,16 +538,27 @@ def plotEfficency(paths, nps, label='', runs=None,
     for i in range(len(time)):
         efficency[i] = time[0]/time[i]/nps[i]
     if len(label) == 0:
+<<<<<<< HEAD
         pl.plot(nps, efficency, '.-', ms=ms, linestyle=linestyle, color=color)
     else:
         pl.semilogx(nps, efficency, '.-', ms=ms, label=label, marker=marker,
                     linestyle=linestyle, linewidth=1., color=color)
+=======
+        pl.plot(nps, efficency, '.-', linestyle=linestyle, color=color)
+    else:
+        pl.semilogx(nps, efficency, '.-', label=label, marker=marker,
+                    linestyle=linestyle, color=color)
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
     return time
 
 
 def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
+<<<<<<< HEAD
             scale=1, basex=10, basey=10, marker='', linestyle='-', color='',
             ms=3, lw=1.):
+=======
+            scale=1, basex=10, basey=10, marker='', linestyle='-', color=''):
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
     if runs is None:
         runs = ['']
     time, fails, timeMean, timeSTD = getTimes(paths, runs, pattern)
@@ -417,11 +572,19 @@ def addTime(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
     # errorbar(log(nps), log(timeMean), log(timeSTD))
     # errorbar(log(nps), log(time), log(timeSTD))
     if len(color) == 0:
+<<<<<<< HEAD
         pl.loglog(nps, pl.array(time)*scale, ms=ms, label=label, basex=basex,
                   basey=basey, marker=marker, linestyle=linestyle, lw=lw)
     else:
         pl.loglog(nps, pl.array(time)*scale, ms=ms, label=label, basex=basex,
                   basey=basey, marker=marker, linestyle=linestyle, lw=lw,
+=======
+        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
+                  basey=basey, marker=marker, linestyle=linestyle)
+    else:
+        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
+                  basey=basey, marker=marker, linestyle=linestyle,
+>>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
                   color=color)
     pl.legend(loc=0)
     return time
