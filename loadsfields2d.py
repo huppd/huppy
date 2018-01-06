@@ -80,11 +80,11 @@ def lodnplot_streamfunc(di='.', num=0):
     return x, y, u
 
 
-def lodnplots_streamfunc(di='.', num=0, nf=1):
+def lodnplots_streamfunc(di='.', num=0, nf=1, save=False):
     for m in range(2*nf+1):
         pl.figure()
         lodnplot_streamfunc(di, num=num+m)
-        #pl.xlim((0.75, 4.75))
+        # pl.xlim((0.75, 4.75))
         if m == 0:
 <<<<<<< HEAD
             pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_0)$')
@@ -96,28 +96,36 @@ def lodnplots_streamfunc(di='.', num=0, nf=1):
             pl.title(r'$\mathcal{I}(\hat{\mathbf{u}}_'+str((m+1)/2)+')$')
 =======
             pl.title(r'$\hat{\mathbf{u}}_0$')
-            pl.savefig('uc0.pdf', bbox_inches='tight')
+            if save:
+                pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
-            pl.title(r'$\hat{\mathbf{u}}^s_{'+str((m+1)/2)+'}$')
-            pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
+            pl.title(r'$\hat{\mathbf{u}}^s_{'+str(int((m+1)/2))+'}$')
+            if save:
+                pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
         else:
+<<<<<<< HEAD
             pl.title(r'$\hat{\mathbf{u}}^c_{'+str((m+1)/2)+'}$')
 >>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
+=======
+            pl.title(r'$\hat{\mathbf{u}}^c_{'+str(int((m+1)/2))+'}$')
+            if save:
+                pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
+>>>>>>> 9542e4670e6efb606494db35d1feb53215c99399
 
 
 def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
     x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     plot_streamfunction(x, y, u['X'], u['Y'])
-    #pl.figure()
-    #pl.plot(x, u['X'][0,:],'.', label=r'$t='+str(t/pl.pi)+'\pi$')
-    #pl.title(r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.figure()
+    # pl.plot(x, u['X'][0,:],'.', label=r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.title(r'$t='+str(t/pl.pi)+'\pi$')
     pl.xlabel(r'$x$')
     pl.ylabel(r'$y$')
-    #pl.legend(loc=0)
+    # pl.legend(loc=0)
     pl.title(r'$\mathbf{u}(t='+str(t/pl.pi)+'\pi)$')
-    #pl.xlim((0.75, 4.75))
-    #pl.gca().set_aspect('equal')
+    # pl.xlim((0.75, 4.75))
+    # pl.gca().set_aspect('equal')
     return x, y, u
 
 
@@ -165,19 +173,19 @@ def plot_energyspec(di='.', num=0, nf=1):
     pl.semilogy(e)
     pl.grid(True)
     pl.xlabel(r'mode: $k$')
-    pl.ylabel(r'$e=|| \mathbf{\hat{u}}_k||$', ha='left', va='bottom',
+    pl.ylabel(r'$e=\|\mathbf{\hat{u}}_k\|$', ha='right', va='bottom',
               rotation=0)
-    pl.gca().yaxis.set_label_coords(-0.075,  1.02)
-    #print('c mode:  '+str(m+1)+'\tnorm:\t'+str(norc))
-    #print('s mode:  '+str(m+1)+'\tnorm:\t'+str(nors))
-    #return x, y, u
+    pl.gca().yaxis.set_label_coords(-0.1, 1.02)
+    # print('c mode:  '+str(m+1)+'\tnorm:\t'+str(norc))
+    # print('s mode:  '+str(m+1)+'\tnorm:\t'+str(nors))
+    # return x, y, u
 
 
 def lodnplot_mumodeprof(di='.', num=0, I=1, nf=1, t=0):
-    #pl.figure()
+    # pl.figure()
     x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     pl.plot(x, u['X'][0, :], ',-',  label=r'$t='+str(t/pl.pi)+'\pi$')
-    #pl.title(r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.title(r'$t='+str(t/pl.pi)+'\pi$')
     pl.xlabel(r'$x$')
     pl.ylabel(r'$u$')
     pl.title(r'$\mathbf{u}(\mathbf{x}, t='+str(t)+')$')
@@ -188,12 +196,12 @@ def lodnplot_mumodeprof(di='.', num=0, I=1, nf=1, t=0):
 def lodnplot_mvfield(di='.', num=0, I=1, nf=1, t=0):
     x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
     plot_vfield(x, y, u, I)
-    #pl.figure()
-    #pl.plot(x, u['X'][0, :], '.', label=r'$t='+str(t/pl.pi)+'\pi$')
-    #pl.title(r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.figure()
+    # pl.plot(x, u['X'][0, :], '.', label=r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.title(r'$t='+str(t/pl.pi)+'\pi$')
     pl.xlabel(r'$x$')
     pl.ylabel(r'$y$')
-    #pl.legend(loc=0)
+    # pl.legend(loc=0)
     pl.title(r'$\mathbf{u}(t='+str(t)+')$')
     return x, y, u
 
@@ -217,10 +225,10 @@ def lodnplot_mumodebug(di='.', num=0, I=1, nf=8, Nt=16):
             up[:, i] += uc['X'][:, 0]*cos(m*t)+us['X'][:, 0]*sin(m*t)
         print('c mode:  '+str(m)+'\tnorm:\t'+str(norc))
         print('s mode:  '+str(m)+'\tnorm:\t'+str(nors))
-    #plot_vfield(x, y, u, I)
+    # plot_vfield(x, y, u, I)
     pl.figure()
     # pl.plot(x, u['X'][0,:], '.-', label=r'$t='+str(t/pl.pi)+'\pi$')
-    #pl.title(r'$t='+str(t/pl.pi)+'\pi$')
+    # pl.title(r'$t='+str(t/pl.pi)+'\pi$')
     pl.xlabel(r'$x$')
     pl.ylabel(r'$u$')
     pl.legend(loc=0)
@@ -235,7 +243,7 @@ def plot_stream(x, y, u):
     streamplot(x, y, u['X'], u['Y'], color=M, linewidth=lw)
     pl.xlabel('x')
     pl.ylabel('y')
-    #pl.colorbar()
+    # pl.colorbar()
     pl.show()
 
 
@@ -250,15 +258,15 @@ def lod_vdif(di1='.', di2='.', num1=0, num2=0):
 
 
 def plot_vdif(x, y, e):
-    #e['Z'] = pl.sqrt(e['X']**2 + e['Y']**2)
-    #plot_vfield(x, y, e)
+    # e['Z'] = pl.sqrt(e['X']**2 + e['Y']**2)
+    # plot_vfield(x, y, e)
     pl.figure()
     pl.gca().set_aspect('equal')
     pl.pcolor(x, y, e['Z'])
     pl.colorbar()
     pl.xlabel(r'$x$')
     pl.ylabel(r'$y$')
-    print('||e||_2 =',  pl.norm(e['Z']))
+    print('\|e\|_2 =',  pl.norm(e['Z']))
     pl.show()
 
 
@@ -326,11 +334,11 @@ def verify_para(x, y, u, fd='X'):
         pl.ylabel(r'$\frac{|u(y)-u^\star(y)|}{|u^\star(y)|}$')
     else:
         pl.ylabel(r'$\frac{|v(y)-v^\star(y)|}{|v^\star(y)|}$')
-    #subplot(224)
-    #if(fd=='X'):
-            #plot(y, norm(u[fd][nx/2, y]-vp.parabola(y))/abs(vp.parabola(y)))
-    #elif:
-            #plot(y, norm(u[fd][nx/2, y]-vp.parabola(x)))
+    # subplot(224)
+    # if(fd=='X'):
+    # plot(y, norm(u[fd][nx/2, y]-vp.parabola(y))/abs(vp.parabola(y)))
+    # elif:
+    # plot(y, norm(u[fd][nx/2, y]-vp.parabola(x)))
 
 
 def verify_pulse(x, y, u, fd='X', mode='c', re=1., om=1., px=1.):
@@ -423,18 +431,18 @@ def verify_pulse(x, y, u, fd='X', mode='c', re=1., om=1., px=1.):
         pl.ylabel(r'$\frac{|u^{'+mode+'}(y)-u^\star(y)|}{|u^\star(y)|}$')
     else:
         pl.ylabel(r'$\frac{|v^{'+mode+'}(y)-v^\star(y)|}{|v^\star(y)|}$')
-    #subplot(224)
-    #if(fd == 'X'):
-            #plot(y, norm(u[fd][nx/2, y]-vp.parabola(y))/abs(vp.parabola(y)))
-    #elif:
-            #plot(y, norm(u[fd][nx/2, y]-vp.parabola(x)))
+    # subplot(224)
+    # if(fd == 'X'):
+    # plot(y, norm(u[fd][nx/2, y]-vp.parabola(y))/abs(vp.parabola(y)))
+    # elif:
+    # plot(y, norm(u[fd][nx/2, y]-vp.parabola(x)))
 
 
 if __name__ == "__main__":
     i = '00001'
     if len(sys.argv) > 1:
         i = sys.argv[1]
-    print i
+    print(i)
     #
     DIRECTOR = '.'
 <<<<<<< HEAD

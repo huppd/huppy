@@ -9,20 +9,20 @@ INF = 1e9999
 
 # helper string
 FLOAT_STR = r"[\-]{0,1}\d+.{0,1}\d+e{0,1}[-+]{0,1}\d*"
-int_str = r"\d+"
+INT_STR = r"\d+"
 
 # lin solver
 BelosIterPattern = re.compile(
-    r"Iter[ ]+(" + int_str + r"), \[ +" + int_str + r"\] :    (" + FLOAT_STR +
+    r"Iter[ ]+(" + INT_STR + r"), \[ +" + INT_STR + r"\] :    (" + FLOAT_STR +
     r")")
 BelosMaxItPattern = re.compile(
-    r"\s+[OK,Failed]+[.]+Number of Iterations = (" + int_str + r") [<=]+ " +
-    int_str)
+    r"\s+[OK,Failed]+[.]+Number of Iterations = (" + INT_STR + r") [<=]+ " +
+    INT_STR)
 BelosArTolPattern = re.compile(
-    r"\s+residual \[ " + int_str + r" \] = (" + FLOAT_STR + r") [<>] ")
+    r"\s+residual \[ " + INT_STR + r" \] = (" + FLOAT_STR + r") [<>] ")
 
 # nonlin solver
-NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (" + int_str + r") -- ")
+NOXIterPattern = re.compile(r"-- Nonlinear Solver Step (" + INT_STR + r") -- ")
 NOXResPattern = re.compile(
     r"\|\|F\|\| = (" + FLOAT_STR + r")  step = " + r"(" + FLOAT_STR +
     r")  dx = ([\-]{0,1}\d+\.\d+[e]{0,1}[-+]\d+)[^\d]*")
@@ -43,35 +43,35 @@ PimpSolveTime = re.compile(
     r"(\d+.{0,1}\d*e{0,1}[-,+]{0,1}\d*) \((\d+)\)\s+(\d+.{0,1}\d*" +
     r"e{0,1}[-,+]{0,1}\d*) \((\d+)\)")
 NOXCompFTime = re.compile(
-    r"NOX: compute F\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
-    FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" +
-    int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
+    r"NOX: compute F\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" +
+    FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" + FLOAT_STR + r") \((" +
+    INT_STR + r")\)\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)")
 NOXSolveDXTime = re.compile(
-    r"NOX: solve dx\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
-    FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" +
-    int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
+    r"NOX: solve dx\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" +
+    FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" + FLOAT_STR + r") \((" +
+    INT_STR + r")\)\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)")
 NOXUpdateXTime = re.compile(
-    r"NOX: update X\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
-    FLOAT_STR + r" ) \((" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" +
-    FLOAT_STR + r") \((" + int_str + r")\)")
+    r"NOX: update X\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" +
+    FLOAT_STR + r" ) \((" + FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" +
+    FLOAT_STR + r") \((" + INT_STR + r")\)")
 BelosTotTime = re.compile(
     r"Compound\( MHDtConvectionDiffusion\, MH_Grad\, MH_Div \): " +
-    r"BlockGmresSolMgr total solve time\s+(" + FLOAT_STR + r") \((" + int_str +
-    r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)\s+(" + FLOAT_STR +
-    r") \((" + int_str + r")\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
+    r"BlockGmresSolMgr total solve time\s+(" + FLOAT_STR + r") \((" + INT_STR +
+    r")\)\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)\s+(" + FLOAT_STR +
+    r") \((" + INT_STR + r")\)\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)")
 FTime = re.compile(
     r"MHDtConvectionDiffusion: BlockGmresSolMgr total solve time\s+" +
-    FLOAT_STR + r" \(" + int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str +
-    r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \(("
-    + int_str + r")\)")
+    FLOAT_STR + r" \(" + INT_STR + r"\)\s+" + FLOAT_STR + r" \(" + INT_STR +
+    r"\)\s+" + FLOAT_STR + r" \(" + INT_STR + r"\)\s+(" + FLOAT_STR + r") \(("
+    + INT_STR + r")\)")
 DivGradTime = re.compile(
     r"DivGrad: BlockGmresSolMgr total solve time\s+" + FLOAT_STR + r" \(" +
-    int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+" + FLOAT_STR +
-    r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \((" + int_str + r")\)")
+    INT_STR + r"\)\s+" + FLOAT_STR + r" \(" + INT_STR + r"\)\s+" + FLOAT_STR +
+    r" \(" + INT_STR + r"\)\s+(" + FLOAT_STR + r") \((" + INT_STR + r")\)")
 FZTime = re.compile(
     r"ConvectionDiffusionVOp: BlockGmresSolMgr total solve time\s+" + FLOAT_STR
-    + r" \(" + int_str + r"\)\s+" + FLOAT_STR + r" \(" + int_str + r"\)\s+" +
-    FLOAT_STR + r" \(" + int_str + r"\)\s+(" + FLOAT_STR + r") \((" + int_str +
+    + r" \(" + INT_STR + r"\)\s+" + FLOAT_STR + r" \(" + INT_STR + r"\)\s+" +
+    FLOAT_STR + r" \(" + INT_STR + r"\)\s+(" + FLOAT_STR + r") \((" + INT_STR +
     r")\)")
 
 
@@ -134,9 +134,14 @@ def extractmint(path, runs):
         time = min(time, tnew)
         if tnew == INF:
             fails += 1
+<<<<<<< HEAD
             print '\t', float(run)/(len(runs)-1)*100., '% failed'
         else:
             print '\t', float(run)/(len(runs)-1)*100., '% done'
     print fails, 'fails of', len(runs)
     print
+=======
+    print(fails, 'fails of', len(runs))
+    print()
+>>>>>>> 9542e4670e6efb606494db35d1feb53215c99399
     return time
