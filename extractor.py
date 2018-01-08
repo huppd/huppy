@@ -134,14 +134,9 @@ def extractmint(path, runs):
         time = min(time, tnew)
         if tnew == INF:
             fails += 1
-<<<<<<< HEAD
-            print '\t', float(run)/(len(runs)-1)*100., '% failed'
-        else:
-            print '\t', float(run)/(len(runs)-1)*100., '% done'
-    print fails, 'fails of', len(runs)
-    print
-=======
+            # print '\t', float(run)/(len(runs)-1)*100., '% failed'
+        # else:
+            # print '\t', float(run)/(len(runs)-1)*100., '% done'
     print(fails, 'fails of', len(runs))
     print()
->>>>>>> 9542e4670e6efb606494db35d1feb53215c99399
     return time
