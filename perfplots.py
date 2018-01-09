@@ -39,11 +39,9 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
                         ls=LINES[i])
             pl.xlabel('Picard iteration')
             pl.ylabel(r'$\|\mathbf{r}\|$')
-            if ref == 0:
+            if refs == 0:
                 pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                             ls=LINES[i], label=labels[i])
-                if legend_yes:
-                    pl.legend(loc=0)
             else:
                 pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                             ls=LINES[i])
@@ -58,8 +56,6 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
             pl.gca().get_xaxis().set_major_locator(
                 pl.MaxNLocator(integer=True))
             # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
-            pl.gca().get_yaxis().set_major_locator(
-                pl.MaxNLocator(integer=True))
             # pl.savefig('F.pdf', bbox_inches='tight')
             pl.figure(2)
             pl.semilogy(iter_count[1:], res[1:, 1], basey=2, marker='.',
@@ -148,7 +144,6 @@ def plot_linears(paths=None, filename='Picard', leg=None, refs=1):
                 pl.legend(leg, loc=0)
             pl.savefig('lintol.pdf', bbox_inches='tight')
             offset += len(linatol)
-
 
 
 def plotNOX(paths=None, filename='output', run='', newton=False, save=False):
