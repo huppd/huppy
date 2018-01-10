@@ -440,25 +440,36 @@ def plot_linears(path='./', filenames=None, leg=None, refs=0, save=False):
                 pl.savefig(file_pre+'_lintol.pdf', bbox_inches='tight')
 
 
+def __my_cumsum(iters):
+    cumsum = 0
+    iterres = pl.copy(iters)
+    for j, iter_temp in enumerate(iters):
+        if j > 0 and iter_temp == 0:
+            cumsum = iterres[j-1]
+        iterres[j] += cumsum
+    return iterres
+
+
 def plot_refinement(path='./', save=False):
     """ plots residual refinement ... over iterations """
     file_str = path+'refinementTest.txt'
     res = pl.loadtxt(file_str)
     print(res)
     pl.figure(1)
-    # pl.semilogy(res[:, 0], res[:, -2]/res[:, 1], marker='.', color=COLORS[0],
-                # linestyle=LINES[0])
-    # pl.semilogy(res[:, 0], res[:, -1], marker='.', color=COLORS[1],
-                # linestyle=LINES[1])
     for i in range(len(res[:, 1])):
         if res[i, 1] == 0:
             res[i, 1] = 1.
         if res[i, 4] == 0:
             res[i, 4] = 1
-    pl.semilogy(res[:, 2]/res[:, 1], marker='.', color=COLORS[0],
+    iters = __my_cumsum(res[:,0])
+    pl.semilogy(iters, res[:, 2]/res[:, 1], marker='.', color=COLORS[0],
                 linestyle=LINES[0])
-    pl.semilogy(res[:, 3]/res[:, 4], marker='.', color=COLORS[1],
+    pl.semilogy(iters, res[:, 3]/res[:, 4], marker='.', color=COLORS[1],
                 linestyle=LINES[1])
+    # pl.semilogy(iters, res[:, 2], marker='.', color=COLORS[0],
+                # linestyle=LINES[0])
+    # pl.semilogy(iters, res[:, 3], marker='.', color=COLORS[1],
+                # linestyle=LINES[1])
     pl.xlabel('Picard step')
     pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(0.0, 1.02)
