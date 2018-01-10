@@ -450,12 +450,14 @@ def plot_refinement(path='./', save=False):
                 # linestyle=LINES[0])
     # pl.semilogy(res[:, 0], res[:, -1], marker='.', color=COLORS[1],
                 # linestyle=LINES[1])
-    for i in range(len(res[:,1])):
+    for i in range(len(res[:, 1])):
         if res[i, 1] == 0:
             res[i, 1] = 1.
-    pl.semilogy(res[:, -2]/res[:, 1], marker='.', color=COLORS[0],
+        if res[i, 4] == 0:
+            res[i, 4] = 1
+    pl.semilogy(res[:, 2]/res[:, 1], marker='.', color=COLORS[0],
                 linestyle=LINES[0])
-    pl.semilogy(res[:, -1], marker='.', color=COLORS[1],
+    pl.semilogy(res[:, 3]/res[:, 4], marker='.', color=COLORS[1],
                 linestyle=LINES[1])
     pl.xlabel('Picard step')
     pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
