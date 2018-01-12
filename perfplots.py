@@ -456,27 +456,34 @@ def plot_refinement(path='./', save=False):
     res = pl.loadtxt(file_str)
     print(res)
     pl.figure(1)
+    ax1 = pl.subplot(211)
+    pl.subplots_adjust(hspace=0)
     for i in range(len(res[:, 1])):
         if res[i, 1] == 0:
             res[i, 1] = 1.
+        if res[i, 1] == 1:
+            res[i, 3] = 0.3
         if res[i, 4] == 0:
             res[i, 4] = 1
     iters = __my_cumsum(res[:,0])
     pl.semilogy(iters, res[:, 2]/res[:, 1], marker='.', color=COLORS[0],
-                linestyle=LINES[0])
+                linestyle=LINES[0], label=r'$\|\mathbf{r}\|/(N_f+1)$')
     pl.semilogy(iters, res[:, 3]/res[:, 4], marker='.', color=COLORS[1],
-                linestyle=LINES[1])
-    # pl.semilogy(iters, res[:, 2], marker='.', color=COLORS[0],
-                # linestyle=LINES[0])
-    # pl.semilogy(iters, res[:, 3], marker='.', color=COLORS[1],
-                # linestyle=LINES[1])
+                linestyle=LINES[1],
+                label=r'$\|\Delta \mathbf{r}\|/N_f^{\mathrm{inc}}$')
+    pl.ylabel(r'$\|\mathbf{r}\|$')
+    pl.legend(loc=0)
+    pl.subplot(212, sharex=ax1)
+    pl.plot(iters, res[:, 1]-1, marker='.', color=COLORS[0],
+                linestyle=LINES[0], label=r'$N_f$')
+    pl.plot(iters, res[:, 4], marker='.', color=COLORS[1],
+                linestyle=LINES[1], label=r'$N_f^{\mathrm{inc}}$')
+    pl.legend(loc=0)
+    pl.ylabel(r'$N_f$')
     pl.xlabel('Picard step')
-    pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
-    pl.gca().yaxis.set_label_coords(0.0, 1.02)
     pl.gca().get_xaxis().set_major_locator(
         pl.MaxNLocator(integer=True))
-    # pl.gca().yaxis.set_label_coords(-0.09, 1.075)
-    pl.gca().get_xaxis().set_major_locator(
+    pl.gca().get_yaxis().set_major_locator(
         pl.MaxNLocator(integer=True))
     if save:
         pl.savefig('refF.pdf', bbox_inches='tight')
