@@ -73,34 +73,38 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                    bbox_inches='tight')
 
 
-def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-'):
+def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
+              ymin=1.e-8, loc=0):
     """ plot multipletimes """
     if fields is None:
         fields = ['0']
     if modes is None:
         modes = [2, 4]
-    for i, field in enumerate(fields):
+    i = 0
+    pl.gca().set_color_cycle(None)
+    for field in fields:
         if field == '0':
             energy = load_energy_he(path=path, field=field)
             for j in modes:
                 label = r'$e_{0' + str(j-1) + '}$'
-                pl.semilogy(energy[:-1, 0], (energy[:-1,
-                    j])/pl.pi, label=label, linestyle=linestyle)
+                pl.semilogy(energy[:-1, 0], (energy[:-1, j])/pl.pi,
+                            label=label, linestyle=linestyle)
         else:
             cenergy = load_energy_he(path=path, field='C'+field)
             senergy = load_energy_he(path=path, field='S'+field)
             for j in modes:
                 label = r'$e_{' + field + str(j-1) + '}$'
                 pl.semilogy(cenergy[:-1, 0],
-                            (cenergy[:-1, j]+senergy[:-1,
-                                j])/pl.pi, label=label, linestyle=linestyle)
-    pl.ylim(ymin=10.**-8)
+                            (cenergy[:-1, j]+senergy[:-1, j])/pl.pi,
+                            label=label, linestyle=linestyle)
+        i += 1
+    pl.ylim(ymin=ymin)
     pl.ylim(ymax=1.)
     pl.xlim(xmin=0)
     pl.xlim(xmax=600.)
     pl.xlabel(r'$y$')
     pl.ylabel(r'$e$')
-    pl.legend(loc=0)
+    pl.legend(loc=loc)
     if save:
         pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
                    bbox_inches='tight')
