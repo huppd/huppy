@@ -1,5 +1,7 @@
 """ small script to remove Pimpact-files """
 import os
+import xml.etree.ElementTree as ET
+import numpy as np
 
 
 FIELDS = ['S', 'X', 'Y', 'Z']
@@ -24,6 +26,35 @@ def remove_until(i=0, path='./', nf=0):
                         print('fail')
     else:
         print('Are you sure? i>=100')
+
+
+def update(fname='parameterOut.xml', tol=1.e-6):
+    """ reads refine and changer parameter accordingly """
+    refine = np.loadtxt('refinementTest.txt')
+    nf = int(refine[-1, 1]) - 1
+    nf_inc = int(refine[-1, 4])
+    nf_new = nf + nf_inc
+    tol = 1.0e-6*float(nf_new)
+    print( 'nf: ', nf)
+    print( 'nf_inc: ', nf_inc)
+    print( 'tol: ', tol)
+    tree = ET.parse(fname)
+    root = tree.getroot()
+    # setting nf and npf
+    for child in root.iter('Parameter'):
+        if child.attrib['name'] == 'nf':
+            child.attrib['value'] = str(nf_new)
+        if child.attrib['name'] == 'npf':
+            child.attrib['value'] = str(nf_new)
+
+    # setting NormF
+    for child in root.iter('ParameterList'):
+        if child.attrib['name'] == 'Test 0':
+            for cchild in child.iter('Parameter'):
+                if cchild.attrib['name'] == 'Tolerance':
+                    cchild.attrib['value'] = str(tol)
+
+    tree.write(fname)
 
 
 if __name__ == "__main__":
