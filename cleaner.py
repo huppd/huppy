@@ -28,6 +28,15 @@ def remove_until(i=0, path='./', nf=0):
         print('Are you sure? i>=100')
 
 
+def remove_auto(path='./'):
+    """ reads refine and then cleans """
+    refine = np.loadtxt('refinementTest.txt')
+    i = int(refine[-1, 0])
+    nf = int(refine[-1, 1]) - 1
+    remove_until(i=i, path=path, nf=nf)
+
+
+
 def update(fname='parameterOut.xml', tol=1.e-6):
     """ reads refine and changer parameter accordingly """
     refine = np.loadtxt('refinementTest.txt')
