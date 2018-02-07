@@ -40,10 +40,10 @@ def remove_auto(path='./'):
 def update(fname='parameterOut.xml', tol=1.e-6):
     """ reads refine and changer parameter accordingly """
     refine = np.loadtxt('refinementTest.txt')
-    nf = int(refine[-1, 1]) - 1
+    nf = int(refine[-1, 1]) 
     nf_inc = int(refine[-1, 4])
     nf_new = nf + nf_inc
-    tol = 1.0e-6*float(nf_new)
+    tol = 1.0e-6*float(2*nf_new+1)
     print( 'nf: ', nf)
     print( 'nf_inc: ', nf_inc)
     print( 'tol: ', tol)

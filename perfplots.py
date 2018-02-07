@@ -446,8 +446,8 @@ def __my_cumsum(iters):
     for j, iter_temp in enumerate(iters):
         if j > 0 and iter_temp == 0:
             cumsum = iterres[j-1]
-            iterres[j-1] -= 0.05
-            iterres[j] += cumsum + 0.05
+            iterres[j-1] -= 0.00
+            iterres[j] += cumsum + 0.00
         else:
             iterres[j] += cumsum
     return iterres
@@ -461,26 +461,19 @@ def plot_refinement(path='./', save=False):
     pl.figure(1)
     ax1 = pl.subplot(211)
     pl.subplots_adjust(hspace=0)
-    for i in range(len(res[:, 1])):
-        if res[i, 1] == 0:
-            res[i, 1] = 1.
-        if res[i, 1] == 1:
-            res[i, 3] = 0.3
-        if res[i, 4] == 0:
-            res[i, 4] = 1
     iters = __my_cumsum(res[:,0])
-    pl.semilogy(iters, res[:, 2]/res[:, 1], marker='.', color=COLORS[0],
-                linestyle=LINES[0], label=r'$\|\mathbf{r}\|/(N_f+1)$')
-    pl.semilogy(iters, res[:, 3]/res[:, 4], marker='.', color=COLORS[1],
+    pl.semilogy(iters, res[:, 2]/(2.*res[:, 1] + 1), marker='.', color=COLORS[0],
+                linestyle=LINES[0], label=r'$\|\mathbf{r}\|$')
+    pl.semilogy(iters, res[:, 3]/res[:, 4]/2., marker='.', color=COLORS[1],
                 linestyle=LINES[1],
-                label=r'$\|\Delta \mathbf{r}\|/N_f^{\mathrm{inc}}$')
+                label=r'$\|\Delta r\|$')
     pl.ylabel(r'$\|\mathbf{r}\|$')
     pl.legend(loc=0)
     pl.subplot(212, sharex=ax1)
     for i in range(len(res[:, 1])):
         if res[i, 3] == 0.:
             res[i, 4] = 0
-    pl.plot(iters, res[:, 1]-1, marker='.', color=COLORS[0],
+    pl.plot(iters, res[:, 1], marker='.', color=COLORS[0],
                 linestyle=LINES[0], label=r'$N_f$')
     pl.plot(iters, res[:, 4], marker='.', color=COLORS[1],
                 linestyle=LINES[1], label=r'$N_f^{\mathrm{inc}}$')
