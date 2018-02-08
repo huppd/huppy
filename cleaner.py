@@ -32,7 +32,7 @@ def remove_auto(path='./'):
     """ reads refine and then cleans """
     refine = np.loadtxt('refinementTest.txt')
     i = int(refine[-1, 0])
-    nf = int(refine[-1, 1]) - 1
+    nf = int(refine[-1, 1])
     remove_until(i=i, path=path, nf=nf)
 
 
