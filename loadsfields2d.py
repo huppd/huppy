@@ -4,7 +4,6 @@ from math import pi
 import h5py
 import pylab as pl
 from pylab import sin, cos
-from streamplot import streamplot
 from streamfunction import plot_streamfunction
 import velocity_profiles as vp
 
@@ -16,6 +15,7 @@ def lod_sfield(director='.', num=0, ftype='S', stype=''):
     else:
         key = 'vel'+ftype
     h5file = h5py.File(director+'/'+key+stype+'_'+str(num).zfill(5)+'.h5')
+    print(h5file)
     field = h5file.get(key).value
     print(key+': ', field.shape)
     #
@@ -86,16 +86,7 @@ def lodnplots_streamfunc(di='.', num=0, nf=1, save=False):
         lodnplot_streamfunc(di, num=num+m)
         # pl.xlim((0.75, 4.75))
         if m == 0:
-<<<<<<< HEAD
-            pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_0)$')
-            pl.savefig('uc0.pdf', bbox_inches='tight')
-        elif m % 2 == 1:
-            pl.title(r'$\mathcal{R}(\hat{\mathbf{u}}_'+str((m+1)/2)+')$')
-            pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
-        else:
-            pl.title(r'$\mathcal{I}(\hat{\mathbf{u}}_'+str((m+1)/2)+')$')
-=======
-            pl.title(r'$\hat{\mathbf{u}}_0$')
+            pl.title(r'$\hat{\mathbf{u}}^0$')
             if save:
                 pl.savefig('uc0.pdf', bbox_inches='tight')
         elif m % 2 == 1:
@@ -103,15 +94,9 @@ def lodnplots_streamfunc(di='.', num=0, nf=1, save=False):
             if save:
                 pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
         else:
-<<<<<<< HEAD
-            pl.title(r'$\hat{\mathbf{u}}^c_{'+str((m+1)/2)+'}$')
->>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
-            pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
-=======
             pl.title(r'$\hat{\mathbf{u}}^c_{'+str(int((m+1)/2))+'}$')
             if save:
                 pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
->>>>>>> 9542e4670e6efb606494db35d1feb53215c99399
 
 
 def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
@@ -131,23 +116,14 @@ def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
 
 def lod_mvfield(di='.', num=0, nf=1, t=0):
     x, y, u = lod_vfield(di, num)
-<<<<<<< HEAD
-    print('0 mode:  \tnorm:\t' + str(pl.norm(pl.norm(u['X']) + pl.norm(u['Y'])
-          + pl.norm(u['Z']))))
-=======
     print('0 mode:  \tnorm:\t' + str(pl.norm(pl.norm(u['X']) +
           pl.norm(u['Y']))))
->>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
     for m in range(nf):
         x, y, uc = lod_vfield(di, 2*m+1+num)
         x, y, us = lod_vfield(di, 2*m+2+num)
         norc = 0
         nors = 0
-<<<<<<< HEAD
-        for f in ['X', 'Y', 'Z']:
-=======
         for f in ['X', 'Y']:
->>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
             norc += pl.norm(uc[f])
             nors += pl.norm(us[f])
             u[f] += uc[f]*cos((m+1)*t)+us[f]*sin((m+1)*t)
@@ -445,11 +421,7 @@ if __name__ == "__main__":
     print(i)
     #
     DIRECTOR = '.'
-<<<<<<< HEAD
-    if(len(sys.argv) > 2):
-=======
     if len(sys.argv) > 2:
->>>>>>> 6c94314f05726235beb6f13bb16d69dc7daa217d
         DIRECTOR = sys.argv[2]
     print(DIRECTOR)
     #

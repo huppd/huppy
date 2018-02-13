@@ -49,8 +49,9 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
             pl.semilogy(iter_count, res[:, 0], marker='.', color=COLORS[i],
                         linestyle=LINES[i], label=labels[i])
             if legend_yes:
-                pl.legend(loc=0)
-            pl.xlabel('Picard step')
+                # pl.legend(loc=0)
+                pl.legend(loc=0, handletextpad=0.1)
+                pl.xlabel('Picard step')
             pl.ylabel(r'$\|\mathbf{r}\|$', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
             pl.gca().get_xaxis().set_major_locator(
@@ -81,7 +82,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
                         color=COLORS[i], linestyle=LINES[i],
                         label=labels[i])
             if legend_yes:
-                pl.legend(loc=0)
+                # pl.legend(loc=0)
+                pl.legend(loc=0, handletextpad=0.1)
             pl.xlabel('Picard step')
             pl.ylabel(r'step width', ha='right', va='bottom', rotation=0)
             pl.gca().yaxis.set_label_coords(0.0, 1.02)
@@ -95,7 +97,8 @@ def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
                         color=COLORS[i], linestyle=LINES[i],
                         label=labels[i])
             if legend_yes:
-                pl.legend(loc=0)
+                # pl.legend(loc=0)
+                pl.legend(loc=0, handletextpad=0.1)
             pl.xlabel('Picard step')
             pl.ylabel(r'$||\delta\mathbf{q}||$', ha='right', va='bottom',
                       rotation=0)
@@ -613,7 +616,7 @@ def get_times(paths, runs, pattern):
     return time_min, fails, time_mean, time_std
 
 
-def plot_efficiency(paths, nps, label='', runs=None,
+def plot_efficiency(paths, nps, label=None, runs=None,
                     pattern=ex.PimpSolveTimePattern,
                     marker='', linestyle='-', color='b'):
     """ plots efficiency """
@@ -626,16 +629,9 @@ def plot_efficiency(paths, nps, label='', runs=None,
     print('times: ', times)
     print('fails: ', fails)
     efficency = copy.deepcopy(nps)
-    for i in range(len(time)):
-        efficency[i] = time[0]/time[i]/nps[i]
-    if len(label) == 0:
-        pl.plot(nps, efficency, '.-', ms=ms, linestyle=linestyle, color=color)
-    else:
-        pl.semilogx(nps, efficency, '.-', ms=ms, label=label, marker=marker,
-                    linestyle=linestyle, linewidth=1., color=color)
     for i, time in enumerate(times):
         efficency[i] = times[0]/time/nps[i]
-    if not label:
+    if label is None:
         pl.plot(nps, efficency, '.-', linestyle=linestyle, color=color)
     else:
         pl.semilogx(nps, efficency, '.-', label=label, marker=marker,
@@ -644,7 +640,8 @@ def plot_efficiency(paths, nps, label='', runs=None,
 
 
 def add_time(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
-             scale=1, basex=10, basey=10, marker='', linestyle='-', color=''):
+             scale=1, basex=10, basey=10, marker='', linestyle='-', color='',
+             legend=True):
     """ adds time """
     if runs is None:
         runs = ['']
@@ -660,10 +657,11 @@ def add_time(paths, nps, label='', runs=None, pattern=ex.PimpSolveTimePattern,
     # errorbar(log(nps), log(time), log(time_std))
     if color:
         pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
-                  basey=basey, marker=marker, linestyle=linestyle)
-    else:
-        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
                   basey=basey, marker=marker, linestyle=linestyle,
                   color=color)
-    pl.legend(loc=0)
+    else:
+        pl.loglog(nps, pl.array(time)*scale, label=label, basex=basex,
+                  basey=basey, marker=marker, linestyle=linestyle)
+    if legend:
+        pl.legend(loc=0)
     return time
