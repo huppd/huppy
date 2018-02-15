@@ -13,44 +13,45 @@ def streamfunction(x, y, u, v):
      OUTPUT:
      psi      matrix of size (ny,nx) with streamfunction
     """
-    nx = len(x)
-    ny = len(y)
+    NX = len(x)
+    NY = len(y)
     #
     psi = pl.zeros(u.shape)
-    psix = pl.zeros(nx)
+    psix = pl.zeros(NX)
     #
     # inegral of v(x,0) with respect to x
-    for j in range(1, nx):
+    for j in range(1, NX):
         dx = x[j] - x[j-1]
         psix[j] = psix[j-1] + dx/2 * (v[0, j-1] + v[0, j])
     # inegral of u(x,y) with respect to y
-    for j in range(nx):
-        for i in range(1, ny):
+    for j in range(NX):
+        for i in range(1, NY):
             dy = y[i] - y[i-1]
             psi[i, j] = psi[i-1, j] - dy/2 * (u[i-1, j] + u[i, j])
-    #%% sum of the two integrals
-    for j in range(1, nx):
+    # sum of the two integrals
+    for j in range(1, NX):
         psi[:, j] = psi[:, j] + psix[j]
     return psi
 
 
 def plot_streamfunction(x, y, u, v):
     psi = streamfunction(x, y, u, v)
-    #pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrRd')
-    #pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrBr')
-    #pcolor(x,y,sqrt(u**2+v**2),cmap='hot_r')
-    #pcolormesh(x,y,sqrt(u**2+v**2), shading='flat',cmap='hot_r')
-    #pcolormesh(x,y,sqrt(u**2+v**2), shading='gouraud',cmap='hot_r',
+    # pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrRd')
+    # pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrBr')
+    # pcolor(x,y,sqrt(u**2+v**2),cmap='hot_r')
+    # pcolormesh(x,y,sqrt(u**2+v**2), shading='flat',cmap='hot_r')
+    # pcolormesh(x,y,sqrt(u**2+v**2), shading='gouraud',cmap='hot_r',
     # vmin=0,vmax=1.)
-    pl.pcolormesh(x, y, pl.sqrt(u**2+v**2), shading='gouraud', cmap='hot_r')
-    #shading interp
-    #pcolor(x,y,sqrt(u**2+v**2),cmap='Blues')
-    #pcolor(x,y,sqrt(u**2+v**2),cmap='autumn')
+    pl.pcolormesh(x, y, pl.sqrt(u**2+v**2), shading='gouraud', cmap='hot_r',
+                  rasterized=True)
+    # shading interp
+    # pcolor(x,y,sqrt(u**2+v**2),cmap='Blues')
+    # pcolor(x,y,sqrt(u**2+v**2),cmap='autumn')
     pl.colorbar()
     pl.contour(x, y, psi, 20, colors='black', linestyles='solid',
-               linewidths=1.25)
-    #circ = Circle([1.,1.],radius=0.12,color='0.5',fill=True)
-    #gca().add_artist(circ)
+               linewidths=1.25, rasterized=True)
+    # circ = Circle([1.,1.],radius=0.12,color='0.5',fill=True)
+    # gca().add_artist(circ)
     pl.xlabel(r'$x$')
     pl.ylabel(r'$y$')
 
@@ -62,11 +63,11 @@ if __name__ == '__main__':
     #
     [X, Y] = pl.meshgrid(x, y)
     #
-    u = X
-    v = -Y
+    U = X
+    V = -Y
     #
-    psi = streamfunction(x, y, u, v)
+    PSI = streamfunction(x, y, U, V)
     #
-    pl.contourf(x, y, -pl.sqrt(u**2+v**2), 20)
-    pl.contour(x, y, psi, 20, colors='black', linestyles='solid', lw=2)
+    pl.contourf(x, y, -pl.sqrt(U**2+V**2), 20)
+    pl.contour(x, y, PSI, 20, colors='black', linestyles='solid', lw=2)
     pl.show()
