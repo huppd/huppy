@@ -69,8 +69,8 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
                                     label=r'$u_'+field+'^{('+iteration+')}$')
     pl.legend(loc=0)
     if save:
-        pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-                   bbox_inches='tight')
+        pl.savefig(path + 'energyProfile' + fields[0]+str(len(fields)) +
+                   '.pdf', bbox_inches='tight')
 
 
 def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
@@ -106,8 +106,8 @@ def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
     pl.ylabel(r'$e$')
     pl.legend(loc=loc)
     if save:
-        pl.savefig('energyProfile' + fields[0]+str(len(fields)) + '.pdf',
-                   bbox_inches='tight')
+        pl.savefig(path + 'energyProfile' + fields[0]+str(len(fields)) +
+                   '.pdf', bbox_inches='tight')
 
 
 def digdeep(path='./', prefix='xv', refs=1, color=COLORS[0],
@@ -175,13 +175,14 @@ def plot_vs(path='./', refs=1, save=False):
 
 
 def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv',
-                          linestyle='-'):
+                          linestyle='-', label=None):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
     if iters is None:
         iters = [0]
-    pl.ylabel(r'$\|\hat{\mathbf{u}}_k\|$', ha='left', va='bottom', rotation=0)
+    pl.ylabel(r'$\frac{1}{2}\|\hat{\mathbf{u}}_k\|^2_2$', ha='left',
+              va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
     pl.xlabel(r'$k$')
     pl.gca().get_xaxis().set_major_locator(
@@ -189,7 +190,8 @@ def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv',
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
         print(spec)
-        pl.semilogy(spec[:, 0], spec[:, 1], marker='.', linestyle=linestyle)
+        pl.semilogy(spec[:, 0], 0.5*spec[:, 1]**2, marker='.',
+                    linestyle=linestyle, label=label)
 
 
 if __name__ == "__main__":
