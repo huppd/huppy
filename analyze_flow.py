@@ -74,7 +74,7 @@ def plot_energy_dir_all(path='./', direc='Y', fields=None, ref='0',
 
 
 def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
-              ymin=1.e-8, loc=0):
+              xmax=600, ymin=1.e-8, loc=0):
     """ plot multipletimes """
     if fields is None:
         fields = ['0']
@@ -101,10 +101,10 @@ def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
     pl.ylim(ymin=ymin)
     pl.ylim(ymax=1.)
     pl.xlim(xmin=0)
-    pl.xlim(xmax=600.)
+    pl.xlim(xmax=xmax)
     pl.xlabel(r'$y$')
     pl.ylabel(r'$e$')
-    pl.legend(loc=loc)
+    pl.legend(loc=loc, fontsize=8, labelspacing=0.1)
     if save:
         pl.savefig(path + 'energyProfile' + fields[0]+str(len(fields)) +
                    '.pdf', bbox_inches='tight')
@@ -175,7 +175,7 @@ def plot_vs(path='./', refs=1, save=False):
 
 
 def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv',
-                          linestyle='-', label=None):
+                          linestyle='-', label=None, scale=1.):
     """ plots development of each norm over Picards iteration, corresponds to
     NOXPrePostSpecturm
     """
@@ -190,7 +190,7 @@ def plot_engergy_spectrum(path='./', ref=0, iters=None, prefix='xv',
     for i in iters:
         spec = pl.loadtxt(path+prefix+'_'+str(ref)+'_'+str(i)+'.txt')
         print(spec)
-        pl.semilogy(spec[:, 0], 0.5*spec[:, 1]**2, marker='.',
+        pl.semilogy(spec[:, 0], 0.5*scale*spec[:, 1]**2, marker='.',
                     linestyle=linestyle, label=label)
 
 

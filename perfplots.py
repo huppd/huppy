@@ -2,7 +2,7 @@
 import copy
 import pylab as pl
 import extractor as ex
-from plotting_constants import COLORS, MARKERC, LINES, LINEC
+from plotting_constants import COLORS, MARKERS, MARKERC, LINES, LINEC
 
 
 def plot_nonlinears(paths=None, filename='nonlinear', refs=0, labels=None,
@@ -351,7 +351,6 @@ def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1,
     pl.xlabel('Picard step')
     pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
-    pl.gca().get_xaxis().set_major_locator(pl.MaxNLocator(integer=True))
     pl.gca().get_yaxis().set_major_locator(pl.MaxNLocator(integer=True))
     if save:
         pl.savefig('liniter.pdf', bbox_inches='tight')
@@ -447,11 +446,13 @@ def plot_refinement(path='./', save=False, r_min=None, nf_max=None):
     ax1 = pl.subplot(211)
     pl.subplots_adjust(hspace=0)
     iters = __my_cumsum(res[:, 0])
-    pl.semilogy(iters, res[:, 2]/(2.*res[:, 1] + 1), marker='.',
+    Markersize = 3
+    pl.semilogy(iters, res[:, 2]/(2.*res[:, 1] + 1), marker=MARKERS[0],
+                markersize=Markersize,
                 color=COLORS[0], linestyle=LINES[0], label=r'$\|\mathbf{r}\|$')
-    pl.semilogy(iters, res[:, 3]/res[:, 4]/2., marker='.', color=COLORS[1],
-                linestyle=LINES[1],
-                label=r'$\|\Delta r\|$')  # , nonposy='clip'
+    pl.semilogy(iters, res[:, 3]/res[:, 4]/2., marker=MARKERS[1], color=COLORS[1],
+                linestyle=LINES[1], markersize=Markersize,
+                label=r'$\Delta r$')  # , nonposy='clip'
     # pl.ylabel(r'$\|\mathbf{r}\|$')
     pl.legend(loc=0, handletextpad=0.1)
     pl.setp(ax1.get_xticklabels(), visible=False)
@@ -459,10 +460,12 @@ def plot_refinement(path='./', save=False, r_min=None, nf_max=None):
     for i in range(len(res[:, 1])):
         if res[i, 3] == 0.:
             res[i, 4] = 0
-    pl.plot(iters, res[:, 1], marker='.', color=COLORS[0],
-            linestyle=LINES[0], label=r'$N_f$',)
-    pl.plot(iters, res[:, 4], marker='.', color=COLORS[1],
-            linestyle=LINES[1], label=r'$N_f^{\mathrm{inc}}$')
+    pl.plot(iters, res[:, 1], marker=MARKERS[3], color=COLORS[0],
+            markersize=Markersize,
+            linestyle=LINES[3], label=r'$N_f$',)
+    pl.plot(iters, res[:, 4], marker=MARKERS[4], color=COLORS[1],
+            markersize=Markersize,
+            linestyle=LINES[4], label=r'$N_f^{\mathrm{inc}}$')
     pl.legend(loc=0, handletextpad=0.1)
     # pl.ylabel(r'$N_f$')
     pl.xlabel('Picard step')

@@ -7,7 +7,7 @@ def analyze(ref=''):
     """ analyze """
     #
     files = ['Picard'+ref+'.txt',
-             # 'MHDtConvectionDiffusion'+ref+'.txt',
+             'MHDtConvectionDiffusion'+ref+'.txt',
              'DivGrad'+ref+'.txt',
              'ModeNonlinearOp_ConvectionDiffusionVOp'+ref+'.txt',
              'ConvectionDiffusionVOp'+ref+'.txt']
@@ -20,12 +20,12 @@ def analyze(ref=''):
             print('total: ', sum(stats[:, 0]))
             print('iter: ', np.percentile(stats[:, 0], 10),
                   np.percentile(stats[:, 0], 50), np.percentile(stats[:, 0],
-                                90))
+                                                                90))
             print('iter: ', np.mean(stats[:, 0]), '+- ', np.std(stats[:, 0]))
             print('max: ', np.max(stats[:, 0]))
             print('tol: ', np.percentile(stats[:, 1], 10),
                   np.percentile(stats[:, 1], 50), np.percentile(stats[:, 1],
-                                90))
+                                                                90))
             print('tol: ', np.mean(stats[:, 1]), '+- ', np.std(stats[:, 1]))
         print()
 
@@ -35,7 +35,8 @@ def compares(paths=None, ref=''):
     if paths is None:
         paths = ['./']
     #
-    files = ['Picard'+ref+'.txt', 'MHDtConvectionDiffusion'+ref+'.txt',
+    files = ['Picard'+ref+'.txt',
+             # 'MHDtConvectionDiffusion'+ref+'.txt',
              'DivGrad'+ref+'.txt',
              'ModeNonlinearOp_ConvectionDiffusionVOp'+ref+'.txt',
              'ConvectionDiffusionVOp'+ref+'.txt']
