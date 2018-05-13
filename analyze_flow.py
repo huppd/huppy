@@ -80,7 +80,6 @@ def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
         fields = ['0']
     if modes is None:
         modes = [2, 4]
-    i = 0
     pl.gca().set_color_cycle(None)
     for field in fields:
         if field == '0':
@@ -97,7 +96,6 @@ def he_energy(path='./', fields=None, modes=None, save=False, linestyle='-',
                 pl.semilogy(cenergy[:-1, 0],
                             (cenergy[:-1, j]+senergy[:-1, j])/pl.pi,
                             label=label, linestyle=linestyle)
-        i += 1
     pl.ylim(ymin=ymin)
     pl.ylim(ymax=1.)
     pl.xlim(xmin=0)

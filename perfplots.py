@@ -349,7 +349,7 @@ def plot_linear(file_str='./Picard.txt', label=None, save=False, fig=1,
     pl.plot(pl.arange(1, len(lin_iter)+1)+offset, lin_iter, marker='.',
             label=label, linestyle=linestyle)
     pl.xlabel('Picard step')
-    pl.ylabel(r'linear iterations', ha='left', va='bottom', rotation=0)
+    pl.ylabel(r'linear iteration steps', ha='left', va='bottom', rotation=0)
     pl.gca().yaxis.set_label_coords(-0.08, 1.02)
     pl.gca().get_yaxis().set_major_locator(pl.MaxNLocator(integer=True))
     if save:
