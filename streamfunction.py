@@ -34,7 +34,7 @@ def streamfunction(x, y, u, v):
     return psi
 
 
-def plot_streamfunction(x, y, u, v):
+def plot_streamfunction(x, y, u, v, vmin=None, vmax=None):
     psi = streamfunction(x, y, u, v)
     # pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrRd')
     # pcolor(x,y,sqrt(u**2+v**2),cmap='YlOrBr')
@@ -43,7 +43,7 @@ def plot_streamfunction(x, y, u, v):
     # pcolormesh(x,y,sqrt(u**2+v**2), shading='gouraud',cmap='hot_r',
     # vmin=0,vmax=1.)
     pl.pcolormesh(x, y, pl.sqrt(u**2+v**2), shading='gouraud', cmap='hot_r',
-                  rasterized=True)
+                  rasterized=True, vmin=vmin, vmax=vmax)
     # shading interp
     # pcolor(x,y,sqrt(u**2+v**2),cmap='Blues')
     # pcolor(x,y,sqrt(u**2+v**2),cmap='autumn')

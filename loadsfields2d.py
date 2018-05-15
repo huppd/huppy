@@ -92,16 +92,16 @@ def lodnplots_streamfunc(di='.', num=0, nf=1, save=False):
         elif m % 2 == 1:
             pl.title(r'$\hat{\mathbf{u}}^s_{'+str(int((m+1)/2))+'}$')
             if save:
-                pl.savefig('uc'+str((m+1)/2)+'.pdf', bbox_inches='tight')
+                pl.savefig('uc'+str(int((m+1)/2))+'.pdf', bbox_inches='tight')
         else:
             pl.title(r'$\hat{\mathbf{u}}^c_{'+str(int((m+1)/2))+'}$')
             if save:
-                pl.savefig('us'+str((m+1)/2)+'.pdf', bbox_inches='tight')
+                pl.savefig('us'+str(int((m+1)/2))+'.pdf', bbox_inches='tight')
 
 
-def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0):
+def lodnplot_mstreamfunc(di='.', num=0, I=1, nf=1, t=0, vmin=None, vmax=None):
     x, y, u = lod_mvfield(di=di, num=num, nf=nf, t=t)
-    plot_streamfunction(x, y, u['X'], u['Y'])
+    plot_streamfunction(x, y, u['X'], u['Y'], vmin, vmax)
     # pl.figure()
     # pl.plot(x, u['X'][0,:],'.', label=r'$t='+str(t/pl.pi)+'\pi$')
     # pl.title(r'$t='+str(t/pl.pi)+'\pi$')
